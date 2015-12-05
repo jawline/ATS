@@ -1,0 +1,5 @@
+fn even(n) -> (if n (odd (- n 1)) 1)
+fn odd(n) -> (if n (even (- n 1)) 0)
+
+(odd 10)
+(odd 11)
