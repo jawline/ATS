@@ -9,9 +9,9 @@ Statement::Statement(int64_t val) {
   _val = val;
 }
 
-Statement::Statement(StatementType type, size_t argNum) {
+Statement::Statement(StatementType type, size_t storedIndex) {
   _type = type;
-  _argNum = argNum;
+  _storedIndex = storedIndex;
 }
 
 Statement::Statement(StatementType type, std::vector<SafeStatement> const& args) {
@@ -62,8 +62,8 @@ void Statement::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<State
       _args[1]->write(buffer, unresolvedList);
       Helper::divTopTwoStack(buffer);
       break;
-    case Arg:
-      Helper::pushArgumentTop(_argNum, buffer);
+    case Stored:
+      Helper::pushArgumentTop(_storedIndex, buffer);
       break;
     case If: {
       

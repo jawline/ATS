@@ -2,13 +2,14 @@
 #define _JSTATEMENT_DEF_H_
 #include <memory>
 #include <vector>
+#include "./jtype.h"
 #include "../utils/bytebuffer.h"
 
 namespace JIT {
 
     enum StatementType {
         Atom,
-        Arg,
+        Stored,
         Add,
         Subtract,
         Multiply,
@@ -24,7 +25,7 @@ namespace JIT {
           StatementType _type;
           int64_t _val;
           void* _callback;
-          size_t _argNum;
+          size_t _storedIndex;
           std::vector<SafeStatement> _args;
         public:
           Statement(int64_t val);
@@ -35,6 +36,7 @@ namespace JIT {
           void* getCallback() const;
           int getNumArgs() const;
           void updateCallback(void* newCallback);
+
     };
 }
 

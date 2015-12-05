@@ -1,7 +1,19 @@
+ifeq "$(OS)" ""
+	OS = $(shell uname -s)
+endif
+
 #Output executable
 OUTPUT_DIR  = ./bin/
 OUTPUT_FILE = ljit
+
 OUTPUT_LIB_NAME  = libljit.so
+
+ifeq "$(OS)" "Darwin"
+	OUTPUT_LIB = lib$(OUTPUT_LIB_NAME).dylib
+else
+	OUTPUT_LIB = lib$(OUTPUT_LIB_NAME).so
+endif
+
 EXECUTABLE  = $(OUTPUT_DIR)$(OUTPUT_FILE)
 LIBRARY     = $(OUTPUT_DIR)$(OUTPUT_LIB)
 

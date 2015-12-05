@@ -138,7 +138,7 @@ int Parser::getArg(std::string arg, std::vector<std::string> const& argList) {
 
 JIT::SafeStatement Parser::parseArg(char const*& input, std::vector<std::string> const& argList) {
 	Token next = _tokeniser.nextToken(input);
-	return SafeStatement(new Statement(Arg, getArg(next.asString(), argList)));
+	return SafeStatement(new Statement(Stored, getArg(next.asString(), argList)));
 }
 
 SafeStatement Parser::parseBlock(char const*& input, std::vector<std::string> const& argList) {
