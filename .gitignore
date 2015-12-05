@@ -35,3 +35,4 @@
 
 # Debug files
 *.dSYM/
+*.DS_store

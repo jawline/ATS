@@ -42,7 +42,7 @@ char const* Token::asString() const {
 }
 
 int Token::asInt() const {
-	return atoi(_data.c_str());
+	return std::stoi(_data.c_str());
 }
 
 unsigned int Token::line() const {

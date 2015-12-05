@@ -1,7 +1,7 @@
 #Output executable
 OUTPUT_DIR  = ./bin/
 OUTPUT_FILE = ljit
-OUTPUT_LIB  = libljit.so
+OUTPUT_LIB_NAME  = libljit.so
 EXECUTABLE  = $(OUTPUT_DIR)$(OUTPUT_FILE)
 LIBRARY     = $(OUTPUT_DIR)$(OUTPUT_LIB)
 
@@ -14,8 +14,8 @@ INSTALL_INCLUDE_PATH = /usr/local/include/LJIT/
 
 #Compiler settings
 CC=clang++
-CFLAGS=-c -std=c++11 -Wall -ggdb -fPIC
-LDFLAGS=-ggdb -lregexpm
+CFLAGS=-c -std=c++11 -Wall -ggdb -fPIC $(EXTRA_BUILD_FLAGS)
+LDFLAGS=-ggdb -lregexpm $(EXTRA_LINK_FLAGS)
 
 #Rules to find source code - NOTE: Look for a better way to scan directories. Nonrecursive works but is a bit ugly
 SOURCES=$(shell find src/ -type f -name '*.cpp')

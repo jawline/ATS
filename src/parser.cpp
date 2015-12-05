@@ -1,6 +1,4 @@
 #include "parser.h"
-#include <CoreVM/instructions.h>
-#include <CoreVM/registers.h>
 #include <vector>
 #include <stdio.h>
 #include "jit/jcallbacks.h"
