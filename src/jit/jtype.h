@@ -16,6 +16,8 @@ namespace JIT {
 		Type(TypeIdentifier);
 		~Type();
 		TypeIdentifier getTypeID() const;
+
+		bool equals(Type const& other) { return _id == other._id; }
 	};
 }
 

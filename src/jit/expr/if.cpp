@@ -40,6 +40,7 @@ ExpressionCheckResult If::checkResultType(std::vector<Type> const& storedTypes, 
       auto lhsCheck = _args[1]->checkResultType(storedTypes, level);
       auto rhsCheck = _args[2]->checkResultType(storedTypes, level);
 
+
       if (lhsCheck.result != ExpressionCheckResult::Valid || rhsCheck.result != ExpressionCheckResult::Valid) {
         return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Integer)};
       }

@@ -19,7 +19,7 @@ namespace JIT {
     };
 
     struct ExpressionCheckResult {
-      enum { Valid, Invalid } result;
+      enum { Valid, Invalid, InfinateRecursion } result;
       Type resultType;
     };
 
