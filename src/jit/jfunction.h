@@ -17,10 +17,12 @@ namespace JIT {
 	public:
 		Function(SafeStatement const& stmt, size_t numArgs);
 		~Function();
-		
+
 		void rewriteCallbacks();
 		int64_t run();
 		JFPTR getFnPtr();
+
+		StatementCheckResult checkResultType(std::vector<Type> const& storedTypes);
 
 		size_t getNumArgs() const;
 	};

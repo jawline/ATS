@@ -122,3 +122,35 @@ void Statement::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<State
       break;
   }
 }
+
+StatementCheckResult Statement::checkResultType(std::vector<Type> const& storedTypes) {
+
+  switch (_type) {
+    case Atom:
+      return StatementCheckResult{StatementCheckResult::Valid, Type(TypeIdentifier::Integer)};
+
+    case Add:
+    case Subtract:
+    case Multiply:
+    case Divide: {
+      auto lhsCheck = _args[0]->checkResultType(storedTypes);
+      auto rhsCheck = _args[1]->checkResultType(storedTypes);
+      
+      if (lhsCheck.result != StatementCheckResult::Valid || rhsCheck.result != StatementCheckResult::Valid) {
+        return StatementCheckResult{StatementCheckResult::Invalid, Type(TypeIdentifier::Integer)};
+      }
+
+      if (lhsCheck.resultType.getTypeID() != TypeIdentifier::Integer || rhsCheck.resultType.getTypeID() != TypeIdentifier::Integer) {
+        return StatementCheckResult{StatementCheckResult::Invalid, Type(TypeIdentifier::Integer)};  
+      }
+
+      return StatementCheckResult{StatementCheckResult::Valid, Type(TypeIdentifier::Integer)};
+    }
+
+    case Stored:
+      return StatementCheckResult{StatementCheckResult::Valid, storedTypes[_storedIndex]};
+
+    default:
+      return StatementCheckResult{StatementCheckResult::Invalid, Type(TypeIdentifier::Boolean)};
+  }
+}

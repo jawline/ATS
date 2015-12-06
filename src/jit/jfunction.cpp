@@ -52,6 +52,15 @@ void Function::rewriteCallbacks() {
 	}
 }
 
+StatementCheckResult Function::checkResultType(std::vector<Type> const& storedTypes) {
+  
+  if (_numArgs != storedTypes.size()) {
+    return StatementCheckResult{StatementCheckResult::Invalid, Type(TypeIdentifier::Boolean)};
+  }
+
+  return _stmt->checkResultType(storedTypes);
+}
+
 int64_t Function::run() {
   return getFnPtr()();
 }

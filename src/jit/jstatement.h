@@ -18,6 +18,11 @@ namespace JIT {
         NativeCallback
     };
 
+    struct StatementCheckResult {
+      enum { Valid, Invalid } result;
+      Type resultType;
+    };
+
     typedef std::shared_ptr<class Statement> SafeStatement;
 
     class Statement {
@@ -37,6 +42,7 @@ namespace JIT {
           int getNumArgs() const;
           void updateCallback(void* newCallback);
 
+          StatementCheckResult checkResultType(std::vector<Type> const& storedTypes);
     };
 }
 

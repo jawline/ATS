@@ -95,18 +95,6 @@ SafeStatement Parser::parseFunctionCall(char const*& input, std::vector<std::str
 	} else if (name.compare("if") == 0) {
 		type = If;
 		numExpectedArgs = 3;
-	} else if (name.compare("set") == 0) {
-		type = NativeCallback;
-		callback = (void*)Callbacks::set;
-		numExpectedArgs = 2;
-	} else if (name.compare("get") == 0) {
-		type = NativeCallback;
-		callback = (void*)Callbacks::get;
-		numExpectedArgs = 1;
-	} else if (name.compare("print") == 0) {
-		type = NativeCallback;
-		callback = (void*)Callbacks::print;
-		numExpectedArgs = 1;
 	} else {
 		type = NativeCallback;
 		callback = nullptr;
@@ -254,7 +242,14 @@ bool Parser::innerParse(char const*& input) {
 			return false;
 		}
 		fn.rewriteCallbacks();
-		printf("Line Result: %li\n", fn.run());
+
+		std::vector<Type> argTypes;
+
+		if (fn.checkResultType(argTypes).result != StatementCheckResult::Valid) {
+			printf("Cannot run fn because of type error\n");
+		} else {
+			printf("Line Result: %li\n", fn.run());
+		}
 	} else if (next.id() == FUNCTION) {
 		if (!parseFunction(input, _functions)) {
 			return false;

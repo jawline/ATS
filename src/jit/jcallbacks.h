@@ -7,8 +7,6 @@ namespace JIT {
     public:
       static int64_t print(int64_t val);
       static int64_t unresolved();
-      static int64_t set(int64_t idx, int64_t val);
-      static int64_t get(int64_t idx);
   };
 }
 
