@@ -1,6 +1,7 @@
 #include "parser.h"
 #include <vector>
 #include <stdio.h>
+#include "jit/expr/arith.h"
 #include "jit/expr/atom.h"
 #include "jit/jcallbacks.h"
 
@@ -87,19 +88,24 @@ SafeExpression Parser::parseFunctionCall(char const*& input, std::vector<std::st
 	
 	ExpressionType type;
 	void* callback = nullptr;
+	bool arith = false;
 	int numExpectedArgs;
 	
 	if (name.compare("+") == 0) {
 		type = Add;
+		arith = true;
 		numExpectedArgs = 2;
 	} else if (name.compare("-") == 0) {
 		type = Subtract;
+		arith = true;
 		numExpectedArgs = 2;
 	} else if (name.compare("*") == 0) {
 		type = Multiply;
+		arith = true;
 		numExpectedArgs = 2;
 	} else if (name.compare("/") == 0) {
 		type = Divide;
+		arith = true;
 		numExpectedArgs = 2;
 	} else if (name.compare("if") == 0) {
 		type = If;
@@ -115,7 +121,12 @@ SafeExpression Parser::parseFunctionCall(char const*& input, std::vector<std::st
 		return nullptr;
 	}
 
-	auto result = SafeExpression(new Expression(type, callback, args));
+	SafeExpression result;
+	if (arith) {
+		result = SafeExpression(new Arithmetic(type, args));
+	} else {
+		result = SafeExpression(new Expression(type, callback, args));
+	}
 
 	if (type == FunctionCall && callback == nullptr) {
 		_unresolved.push_back(pair<string, SafeExpression>(name, result));

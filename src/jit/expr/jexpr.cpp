@@ -5,10 +5,6 @@
 using namespace JIT;
 using namespace Expressions;
 
-Expression::Expression(ExpressionType type) {
-  _type = type;
-}
-
 //TODO: callbackExpression can cause a leak as the ref counter will never deref
 //TODO: entryRef will do the same
 
@@ -51,26 +47,6 @@ void Expression::setEntry(SafeExpression stmt) {
 
 void Expression::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList) {
   switch (_type) {
-    case Add:
-      _args[0]->write(buffer, unresolvedList);
-      _args[1]->write(buffer, unresolvedList);
-      Helper::addTopTwoStack(buffer);
-      break;
-    case Subtract:
-      _args[0]->write(buffer, unresolvedList);
-      _args[1]->write(buffer, unresolvedList);
-      Helper::subTopTwoStack(buffer);
-      break;
-    case Multiply:
-      _args[0]->write(buffer, unresolvedList);
-      _args[1]->write(buffer, unresolvedList);
-      Helper::mulTopTwoStack(buffer);
-      break;
-    case Divide:
-      _args[0]->write(buffer, unresolvedList);
-      _args[1]->write(buffer, unresolvedList);
-      Helper::divTopTwoStack(buffer);
-      break;
     case Stored:
       Helper::pushArgumentTop(_storedIndex, buffer);
       break;
@@ -136,25 +112,7 @@ void Expression::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expr
 ExpressionCheckResult Expression::checkResultType(std::vector<Type> const& storedTypes, unsigned int level) {
 
   switch (_type) {
-
-    case Add:
-    case Subtract:
-    case Multiply:
-    case Divide: {
-      auto lhsCheck = _args[0]->checkResultType(storedTypes, level);
-      auto rhsCheck = _args[1]->checkResultType(storedTypes, level);
-      
-      if (lhsCheck.result != ExpressionCheckResult::Valid || rhsCheck.result != ExpressionCheckResult::Valid) {
-        return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Integer)};
-      }
-
-      if (lhsCheck.resultType.getTypeID() != TypeIdentifier::Integer || rhsCheck.resultType.getTypeID() != TypeIdentifier::Integer) {
-        return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Integer)};  
-      }
-
-      return ExpressionCheckResult{ExpressionCheckResult::Valid, Type(TypeIdentifier::Integer)};
-    }
-
+    
     case If: {
       auto lhsCheck = _args[1]->checkResultType(storedTypes, level);
       auto rhsCheck = _args[2]->checkResultType(storedTypes, level);
