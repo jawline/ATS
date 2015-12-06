@@ -6,7 +6,7 @@ endif
 OUTPUT_DIR  = ./bin/
 OUTPUT_FILE = ljit
 
-OUTPUT_LIB_NAME  = libljit.so
+OUTPUT_LIB_NAME  = ljit
 
 ifeq "$(OS)" "Darwin"
 	OUTPUT_LIB = lib$(OUTPUT_LIB_NAME).dylib

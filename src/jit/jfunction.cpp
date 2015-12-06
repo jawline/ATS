@@ -4,7 +4,7 @@
 using namespace JIT;
 using namespace Assembler;
 
-Function::Function(SafeStatement const& stmt, size_t numArgs) {
+Function::Function(SafeExpression const& stmt, size_t numArgs) {
   _storedFn = nullptr;
   _stmt = stmt;
   _stmt->setEntry(_stmt);
@@ -17,7 +17,7 @@ Function::~Function() {
   }
 }
 
-void Function::prepare(SafeStatement const& stmt) {
+void Function::prepare(SafeExpression const& stmt) {
   ByteBuffer buffer;
 
   Helper::insertPrologue(buffer);
@@ -37,7 +37,7 @@ size_t Function::getNumArgs() const {
 	return _numArgs;
 }
 
-SafeStatement Function::statement() const {
+SafeExpression Function::Expression() const {
   return _stmt;
 }
 
@@ -57,10 +57,10 @@ void Function::rewriteCallbacks() {
 	}
 }
 
-StatementCheckResult Function::checkResultType(std::vector<Type> const& storedTypes) {
+ExpressionCheckResult Function::checkResultType(std::vector<Type> const& storedTypes) {
   
   if (_numArgs != storedTypes.size()) {
-    return StatementCheckResult{StatementCheckResult::Invalid, Type(TypeIdentifier::Boolean)};
+    return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Boolean)};
   }
 
   return _stmt->checkResultType(storedTypes, 0);

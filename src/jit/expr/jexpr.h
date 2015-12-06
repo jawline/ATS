@@ -7,7 +7,7 @@
 
 namespace JIT {
 
-    enum StatementType {
+    enum ExpressionType {
         Atom,
         Stored,
         Add,
@@ -18,42 +18,42 @@ namespace JIT {
         FunctionCall
     };
 
-    struct StatementCheckResult {
+    struct ExpressionCheckResult {
       enum { Valid, Invalid } result;
       Type resultType;
     };
 
-    typedef std::shared_ptr<class Statement> SafeStatement;
+    typedef std::shared_ptr<class Expression> SafeExpression;
 
-    class Statement {
+    class Expression {
         private:
-          StatementType _type;
+          ExpressionType _type;
 
           TypeIdentifier _atomType;
           int64_t _val;
 
           void* _callbackLocation;
-          SafeStatement _callbackStatement;
+          SafeExpression _callbackExpression;
 
-          SafeStatement _entryRef;
+          SafeExpression _entryRef;
           
           size_t _storedIndex;
           
-          std::vector<SafeStatement> _args;
+          std::vector<SafeExpression> _args;
         public:
-          Statement(int64_t val);
-          Statement(bool val);
-          Statement(StatementType type, size_t argNum);
-          Statement(StatementType type, std::vector<SafeStatement> const& args);
-          Statement(StatementType type, void* callback, std::vector<SafeStatement> const& args);
-          void write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Statement*, size_t>>& unresolvedList);
+          Expression(int64_t val);
+          Expression(bool val);
+          Expression(ExpressionType type, size_t argNum);
+          Expression(ExpressionType type, std::vector<SafeExpression> const& args);
+          Expression(ExpressionType type, void* callback, std::vector<SafeExpression> const& args);
+          void write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList);
           void* getCallback() const;
           int getNumArgs() const;
-          void updateCallback(void* newCallback, SafeStatement callbackStatement);
+          void updateCallback(void* newCallback, SafeExpression callbackExpression);
 
-          void setEntry(SafeStatement stmt);
+          void setEntry(SafeExpression stmt);
 
-          StatementCheckResult checkResultType(std::vector<Type> const& storedTypes, unsigned int level);
+          ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes, unsigned int level);
     };
 }
 

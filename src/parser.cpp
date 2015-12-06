@@ -11,13 +11,13 @@ Parser::~Parser() {}
 
 #define CHECK(x) if (!x) { return nullptr; }
 
-SafeStatement Parser::parseAtom(char const*& input) {
+SafeExpression Parser::parseAtom(char const*& input) {
 	auto token = _tokeniser.nextToken(input);
 
 	if (token.id() == NUM) {
-		return SafeStatement(new Statement((int64_t)token.asInt()));
+		return SafeExpression(new Expression((int64_t)token.asInt()));
 	} else if (token.id() == BOOL) {
-		return SafeStatement(new Statement(token.asBool()));
+		return SafeExpression(new Expression(token.asBool()));
 	} else {
 		return nullptr;
 	}
@@ -33,7 +33,7 @@ bool Parser::resolveAll() {
 				return false;
 			}
 			
-			_unresolved[i].second->updateCallback((void*)_functions[_unresolved[i].first]->getFnPtr(), _functions[_unresolved[i].first]->statement());
+			_unresolved[i].second->updateCallback((void*)_functions[_unresolved[i].first]->getFnPtr(), _functions[_unresolved[i].first]->Expression());
 		
 			//Remove updated item and offset i to compensate
 			_unresolved.erase(_unresolved.begin() + i);
@@ -43,7 +43,7 @@ bool Parser::resolveAll() {
 	return true;
 }
 
-SafeStatement Parser::parseFunctionCall(char const*& input, std::vector<std::string> const& argList) {
+SafeExpression Parser::parseFunctionCall(char const*& input, std::vector<std::string> const& argList) {
 
 	//Get function call name
 	Token next = _tokeniser.nextToken(input);
@@ -51,24 +51,24 @@ SafeStatement Parser::parseFunctionCall(char const*& input, std::vector<std::str
 	Token nameToken = next;
 	string name = next.asString();
 
-	std::vector<SafeStatement> args;
+	std::vector<SafeExpression> args;
 
 	while (true) {
 		next = _tokeniser.peekToken(input);
 		
 		if (next.id() == LPAREN) {
-			SafeStatement arg = parseBlock(input, argList);
+			SafeExpression arg = parseBlock(input, argList);
 			CHECK(arg);
 			args.push_back(arg);
 		} else if (next.id() == NUM || next.id() == BOOL) {
-			SafeStatement arg = parseAtom(input);
+			SafeExpression arg = parseAtom(input);
 			CHECK(arg);
 			args.push_back(arg);
 		} else if (next.id() == ID) {
 			
 			//Peek the name
 			next = _tokeniser.peekToken(input);
-			SafeStatement arg = nullptr;
+			SafeExpression arg = nullptr;
 
 			if (getArg(next.asString(), argList) != -1) {
 				arg = parseArg(input, argList);
@@ -83,7 +83,7 @@ SafeStatement Parser::parseFunctionCall(char const*& input, std::vector<std::str
 		}
 	}
 	
-	StatementType type;
+	ExpressionType type;
 	void* callback = nullptr;
 	int numExpectedArgs;
 	
@@ -113,10 +113,10 @@ SafeStatement Parser::parseFunctionCall(char const*& input, std::vector<std::str
 		return nullptr;
 	}
 
-	auto result = SafeStatement(new Statement(type, callback, args));
+	auto result = SafeExpression(new Expression(type, callback, args));
 
 	if (type == FunctionCall && callback == nullptr) {
-		_unresolved.push_back(pair<string, SafeStatement>(name, result));
+		_unresolved.push_back(pair<string, SafeExpression>(name, result));
 	}
 
 	return result;
@@ -131,17 +131,17 @@ int Parser::getArg(std::string arg, std::vector<std::string> const& argList) {
 	return -1;
 }
 
-JIT::SafeStatement Parser::parseArg(char const*& input, std::vector<std::string> const& argList) {
+JIT::SafeExpression Parser::parseArg(char const*& input, std::vector<std::string> const& argList) {
 	Token next = _tokeniser.nextToken(input);
-	return SafeStatement(new Statement(Stored, getArg(next.asString(), argList)));
+	return SafeExpression(new Expression(Stored, getArg(next.asString(), argList)));
 }
 
-SafeStatement Parser::parseBlock(char const*& input, std::vector<std::string> const& argList) {
+SafeExpression Parser::parseBlock(char const*& input, std::vector<std::string> const& argList) {
 
 	//Discard lparen
 	Token next = _tokeniser.nextToken(input);
 	next = _tokeniser.peekToken(input);
-	SafeStatement result;
+	SafeExpression result;
 
 	if (next.id() == ID) {
 
@@ -226,7 +226,7 @@ bool Parser::parseFunction(char const*& input, std::map<std::string, SafeFunctio
 		return false;
 	}
 	
-	SafeStatement block = parseBlock(input, args);
+	SafeExpression block = parseBlock(input, args);
 	CHECK(block);
 	functionList[name] = SafeFunction(new Function(block, args.size()));
 
@@ -242,7 +242,7 @@ bool Parser::innerParse(char const*& input) {
 	}
 
 	if (next.id() == LPAREN) {
-		SafeStatement block = parseBlock(input, std::vector<std::string>());
+		SafeExpression block = parseBlock(input, std::vector<std::string>());
 		CHECK(block);
 		Function fn = Function(block, 0);
 		if (!resolveAll()) {
@@ -253,7 +253,7 @@ bool Parser::innerParse(char const*& input) {
 		std::vector<Type> argTypes;
 		auto checkResult = fn.checkResultType(argTypes);
 
-		if (checkResult.result != StatementCheckResult::Valid) {
+		if (checkResult.result != ExpressionCheckResult::Valid) {
 			printf("Cannot run fn because of type error\n");
 		} else {
 			printf("Running Line\n");

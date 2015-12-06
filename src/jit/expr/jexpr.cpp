@@ -4,59 +4,59 @@
 
 using namespace JIT;
 
-//TODO: callbackStatement can cause a leak as the ref counter will never deref
+//TODO: callbackExpression can cause a leak as the ref counter will never deref
 //TODO: entryRef will do the same
 
-Statement::Statement(int64_t val) {
+Expression::Expression(int64_t val) {
   _type = Atom;
   _atomType = TypeIdentifier::Integer;
   _val = val;
 }
 
-Statement::Statement(bool val) {
+Expression::Expression(bool val) {
   _type = Atom;
   _atomType = TypeIdentifier::Boolean;
   _val = val ? 1 : 0;
 }
 
-Statement::Statement(StatementType type, size_t storedIndex) {
+Expression::Expression(ExpressionType type, size_t storedIndex) {
   _type = type;
   _storedIndex = storedIndex;
 }
 
-Statement::Statement(StatementType type, std::vector<SafeStatement> const& args) {
+Expression::Expression(ExpressionType type, std::vector<SafeExpression> const& args) {
   _type = type;
   _args = args;
 }
 
-Statement::Statement(StatementType type, void* callback, std::vector<SafeStatement> const& args) {
+Expression::Expression(ExpressionType type, void* callback, std::vector<SafeExpression> const& args) {
   _type = type;
   _callbackLocation = callback;
-  _callbackStatement = nullptr;
+  _callbackExpression = nullptr;
   _args = args;
 }
 
-void Statement::updateCallback(void* callback, SafeStatement callbackStatement) {
+void Expression::updateCallback(void* callback, SafeExpression callbackExpression) {
   _callbackLocation = callback;
-  _callbackStatement = callbackStatement;
+  _callbackExpression = callbackExpression;
 }
 
-void* Statement::getCallback() const {
+void* Expression::getCallback() const {
   return _callbackLocation;
 }
 
-int Statement::getNumArgs() const {
+int Expression::getNumArgs() const {
   return _args.size();
 }
 
-void Statement::setEntry(SafeStatement stmt) {
+void Expression::setEntry(SafeExpression stmt) {
   _entryRef = stmt;
   for (unsigned int i = 0; i < _args.size(); i++) {
     _args[i]->setEntry(stmt);
   }
 }
 
-void Statement::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Statement*, size_t>>& unresolvedList) {
+void Expression::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList) {
   switch (_type) {
     case Atom:
       Helper::pushNumber(_val, buffer);
@@ -132,7 +132,7 @@ void Statement::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<State
       size_t addressStart = Helper::callFunction(_callbackLocation ? _callbackLocation : ((void*)Callbacks::unresolved), buffer);
 
       if (_callbackLocation == nullptr) {
-        unresolvedList.push_back(std::pair<Statement*, size_t>(this, addressStart));
+        unresolvedList.push_back(std::pair<Expression*, size_t>(this, addressStart));
       }
 
       break;
@@ -143,11 +143,11 @@ void Statement::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<State
   }
 }
 
-StatementCheckResult Statement::checkResultType(std::vector<Type> const& storedTypes, unsigned int level) {
+ExpressionCheckResult Expression::checkResultType(std::vector<Type> const& storedTypes, unsigned int level) {
 
   switch (_type) {
     case Atom:
-      return StatementCheckResult{StatementCheckResult::Valid, Type(_atomType)};
+      return ExpressionCheckResult{ExpressionCheckResult::Valid, Type(_atomType)};
 
     case Add:
     case Subtract:
@@ -156,36 +156,36 @@ StatementCheckResult Statement::checkResultType(std::vector<Type> const& storedT
       auto lhsCheck = _args[0]->checkResultType(storedTypes, level);
       auto rhsCheck = _args[1]->checkResultType(storedTypes, level);
       
-      if (lhsCheck.result != StatementCheckResult::Valid || rhsCheck.result != StatementCheckResult::Valid) {
-        return StatementCheckResult{StatementCheckResult::Invalid, Type(TypeIdentifier::Integer)};
+      if (lhsCheck.result != ExpressionCheckResult::Valid || rhsCheck.result != ExpressionCheckResult::Valid) {
+        return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Integer)};
       }
 
       if (lhsCheck.resultType.getTypeID() != TypeIdentifier::Integer || rhsCheck.resultType.getTypeID() != TypeIdentifier::Integer) {
-        return StatementCheckResult{StatementCheckResult::Invalid, Type(TypeIdentifier::Integer)};  
+        return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Integer)};  
       }
 
-      return StatementCheckResult{StatementCheckResult::Valid, Type(TypeIdentifier::Integer)};
+      return ExpressionCheckResult{ExpressionCheckResult::Valid, Type(TypeIdentifier::Integer)};
     }
 
     case If: {
       auto lhsCheck = _args[1]->checkResultType(storedTypes, level);
       auto rhsCheck = _args[2]->checkResultType(storedTypes, level);
 
-      if (lhsCheck.result != StatementCheckResult::Valid || rhsCheck.result != StatementCheckResult::Valid) {
-        return StatementCheckResult{StatementCheckResult::Invalid, Type(TypeIdentifier::Integer)};
+      if (lhsCheck.result != ExpressionCheckResult::Valid || rhsCheck.result != ExpressionCheckResult::Valid) {
+        return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Integer)};
       }
 
       if (lhsCheck.resultType.getTypeID() != rhsCheck.resultType.getTypeID()) {
-        return StatementCheckResult{StatementCheckResult::Invalid, Type(TypeIdentifier::Integer)};  
+        return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Integer)};  
       }
 
-      return StatementCheckResult{StatementCheckResult::Valid, lhsCheck.resultType};
+      return ExpressionCheckResult{ExpressionCheckResult::Valid, lhsCheck.resultType};
     }
 
     case FunctionCall: {
       
-      if (_callbackStatement == nullptr) {
-        return StatementCheckResult{StatementCheckResult::Invalid, Type(TypeIdentifier::Integer)};  
+      if (_callbackExpression == nullptr) {
+        return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Integer)};  
       }
 
       std::vector<Type> argTypes;
@@ -193,29 +193,29 @@ StatementCheckResult Statement::checkResultType(std::vector<Type> const& storedT
       for (unsigned int i = 0; i < _args.size(); i++) {
         auto checkResult = _args[i]->checkResultType(storedTypes, level);
 
-        if (checkResult.result != StatementCheckResult::Valid) {
-          return StatementCheckResult{StatementCheckResult::Invalid, Type(TypeIdentifier::Integer)};
+        if (checkResult.result != ExpressionCheckResult::Valid) {
+          return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Integer)};
         }
 
         argTypes.push_back(checkResult.resultType);
       }
 
-      if (_callbackStatement.get() == _entryRef.get()) {
+      if (_callbackExpression.get() == _entryRef.get()) {
         if (level > 0 ) {
           printf("TODO: UNCAUGHT RECURSION\n");
-          return StatementCheckResult{StatementCheckResult::Invalid, Type(TypeIdentifier::Integer)};
+          return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Integer)};
         } else {
-          return _callbackStatement->checkResultType(argTypes, level + 1);
+          return _callbackExpression->checkResultType(argTypes, level + 1);
         }
       }
 
-      return _callbackStatement->checkResultType(argTypes, level);
+      return _callbackExpression->checkResultType(argTypes, level);
     }
 
     case Stored:
-      return StatementCheckResult{StatementCheckResult::Valid, storedTypes[_storedIndex]};
+      return ExpressionCheckResult{ExpressionCheckResult::Valid, storedTypes[_storedIndex]};
 
     default:
-      return StatementCheckResult{StatementCheckResult::Invalid, Type(TypeIdentifier::Boolean)};
+      return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Boolean)};
   }
 }
