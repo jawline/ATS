@@ -11,6 +11,7 @@ namespace Assembler {
 	typedef enum {
 		ID,
 		NUM,
+		BOOL,
 		COMMA,
 		ARROW,
 		LPAREN,
@@ -35,6 +36,7 @@ namespace Assembler {
 		TOKEN_ID id() const;
 		char const* asString() const;
 		int asInt() const;
+		bool asBool() const;
 		unsigned int line() const;
 		std::string debugInfo() const;
 	};

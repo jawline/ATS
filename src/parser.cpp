@@ -13,7 +13,14 @@ Parser::~Parser() {}
 
 SafeStatement Parser::parseAtom(char const*& input) {
 	auto token = _tokeniser.nextToken(input);
-	return token.id() == NUM ? SafeStatement(new Statement((int64_t)token.asInt())) : nullptr;
+
+	if (token.id() == NUM) {
+		return SafeStatement(new Statement((int64_t)token.asInt()));
+	} else if (token.id() == BOOL) {
+		return SafeStatement(new Statement(token.asBool()));
+	} else {
+		return nullptr;
+	}
 }
 
 bool Parser::resolveAll() {
@@ -53,7 +60,7 @@ SafeStatement Parser::parseFunctionCall(char const*& input, std::vector<std::str
 			SafeStatement arg = parseBlock(input, argList);
 			CHECK(arg);
 			args.push_back(arg);
-		} else if (next.id() == NUM) {
+		} else if (next.id() == NUM || next.id() == BOOL) {
 			SafeStatement arg = parseAtom(input);
 			CHECK(arg);
 			args.push_back(arg);
@@ -147,10 +154,10 @@ SafeStatement Parser::parseBlock(char const*& input, std::vector<std::string> co
 			result = parseFunctionCall(input, argList);
 		}
 
-	} else if (next.id() == NUM) {
+	} else if (next.id() == NUM || next.id() == BOOL) {
 		result = parseAtom(input);
 	} else {
-		printf("Expected ID or NUM in block near %s\n", next.debugInfo().c_str());
+		printf("Expected ID or NUM or BOOL in block near %s\n", next.debugInfo().c_str());
 		result = nullptr;
 	}
 
@@ -244,11 +251,16 @@ bool Parser::innerParse(char const*& input) {
 		fn.rewriteCallbacks();
 
 		std::vector<Type> argTypes;
+		auto checkResult = fn.checkResultType(argTypes);
 
-		if (fn.checkResultType(argTypes).result != StatementCheckResult::Valid) {
+		if (checkResult.result != StatementCheckResult::Valid) {
 			printf("Cannot run fn because of type error\n");
 		} else {
-			printf("Line Result: %li\n", fn.run());
+			if (checkResult.resultType.getTypeID() == TypeIdentifier::Integer) {
+				printf("Line Result: %li\n", fn.run());
+			} else {
+				printf("Line Result: %s\n", fn.run() ? "true" : "false");
+			}
 		}
 	} else if (next.id() == FUNCTION) {
 		if (!parseFunction(input, _functions)) {

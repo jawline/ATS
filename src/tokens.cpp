@@ -42,7 +42,11 @@ char const* Token::asString() const {
 }
 
 int Token::asInt() const {
-	return std::stoi(_data.c_str());
+	return std::stoi(_data);
+}
+
+bool Token::asBool() const {
+	return _data.compare("true") ? true : false;
 }
 
 unsigned int Token::line() const {
@@ -106,6 +110,15 @@ Token Tokeniser::peekToken(char const* input, size_t& len) {
 	} else if (strncmp(input, "->", 2) == 0) {
 		result = Token(ARROW, input, 2, getCurrentLine());
 		len = 2;
+	} else if (strncmp(input, ",", 1) == 0) {
+		result = Token(COMMA, input, 1, getCurrentLine());
+		len = 1;
+	} else if (strncmp(input, "true", 4) == 0) {
+		result = Token(BOOL, input, 4, getCurrentLine());
+		len = 4;
+	} else if (strncmp(input, "false", 5) == 0) {
+		result = Token(BOOL, input, 5, getCurrentLine());
+		len = 5;
 	} else if (strncmp(input, ",", 1) == 0) {
 		result = Token(COMMA, input, 1, getCurrentLine());
 		len = 1;

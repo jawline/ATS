@@ -139,7 +139,7 @@ StatementCheckResult Statement::checkResultType(std::vector<Type> const& storedT
 
   switch (_type) {
     case Atom:
-      return StatementCheckResult{StatementCheckResult::Valid, Type(TypeIdentifier::Integer)};
+      return StatementCheckResult{StatementCheckResult::Valid, Type(_atomType)};
 
     case Add:
     case Subtract:
