@@ -5,20 +5,12 @@
 using namespace JIT;
 using namespace Expressions;
 
+Expression::Expression(ExpressionType type) {
+  _type = type;
+}
+
 //TODO: callbackExpression can cause a leak as the ref counter will never deref
 //TODO: entryRef will do the same
-
-Expression::Expression(int64_t val) {
-  _type = Atom;
-  _atomType = TypeIdentifier::Integer;
-  _val = val;
-}
-
-Expression::Expression(bool val) {
-  _type = Atom;
-  _atomType = TypeIdentifier::Boolean;
-  _val = val ? 1 : 0;
-}
 
 Expression::Expression(ExpressionType type, size_t storedIndex) {
   _type = type;
@@ -59,9 +51,6 @@ void Expression::setEntry(SafeExpression stmt) {
 
 void Expression::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList) {
   switch (_type) {
-    case Atom:
-      Helper::pushNumber(_val, buffer);
-      break;
     case Add:
       _args[0]->write(buffer, unresolvedList);
       _args[1]->write(buffer, unresolvedList);
@@ -147,8 +136,6 @@ void Expression::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expr
 ExpressionCheckResult Expression::checkResultType(std::vector<Type> const& storedTypes, unsigned int level) {
 
   switch (_type) {
-    case Atom:
-      return ExpressionCheckResult{ExpressionCheckResult::Valid, Type(_atomType)};
 
     case Add:
     case Subtract:

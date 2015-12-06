@@ -1,6 +1,7 @@
 #include "parser.h"
 #include <vector>
 #include <stdio.h>
+#include "jit/expr/atom.h"
 #include "jit/jcallbacks.h"
 
 using namespace Assembler;
@@ -16,9 +17,9 @@ SafeExpression Parser::parseAtom(char const*& input) {
 	auto token = _tokeniser.nextToken(input);
 
 	if (token.id() == NUM) {
-		return SafeExpression(new Expression((int64_t)token.asInt()));
+		return SafeExpression(new Atom((int64_t)token.asInt()));
 	} else if (token.id() == BOOL) {
-		return SafeExpression(new Expression(token.asBool()));
+		return SafeExpression(new Atom(token.asBool()));
 	} else {
 		return nullptr;
 	}

@@ -8,7 +8,7 @@
 namespace JIT {
   namespace Expressions {
     enum ExpressionType {
-        Atom,
+        AtomType,
         Stored,
         Add,
         Subtract,
@@ -26,11 +26,8 @@ namespace JIT {
     typedef std::shared_ptr<class Expression> SafeExpression;
 
     class Expression {
-        private:
+        protected:
           ExpressionType _type;
-
-          TypeIdentifier _atomType;
-          int64_t _val;
 
           void* _callbackLocation;
           SafeExpression _callbackExpression;
@@ -40,20 +37,32 @@ namespace JIT {
           size_t _storedIndex;
           
           std::vector<SafeExpression> _args;
+
         public:
-          Expression(int64_t val);
-          Expression(bool val);
+          Expression(ExpressionType type);
           Expression(ExpressionType type, size_t argNum);
           Expression(ExpressionType type, std::vector<SafeExpression> const& args);
           Expression(ExpressionType type, void* callback, std::vector<SafeExpression> const& args);
-          void write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList);
-          void* getCallback() const;
-          int getNumArgs() const;
-          void updateCallback(void* newCallback, SafeExpression callbackExpression);
 
           void setEntry(SafeExpression stmt);
 
-          ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes, unsigned int level);
+          /**
+           * Relates to the vmm location of the method being called
+           */
+          void* getCallback() const;
+          void updateCallback(void* newCallback, SafeExpression callbackExpression);
+
+          int getNumArgs() const;
+
+          /**
+           * Does the actual JITTIng
+           */
+          virtual void write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList);
+
+          /**
+           * Type checker
+           */
+          virtual ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes, unsigned int level);
     };
   }
 }
