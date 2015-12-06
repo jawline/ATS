@@ -6,6 +6,7 @@ using namespace JIT::Expressions;
 If::If(std::vector<SafeExpression> const& args) : Expression(IfType, args) {}
 
 void If::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList) {
+
       //Execute condition
       _args[0]->write(buffer, unresolvedList);
       
@@ -22,7 +23,7 @@ void If::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*,
       if (_args.size() == 3) {
         _args[2]->write(buffer, unresolvedList);
       } else {
-        Helper::pushNumber(0, buffer);
+        printf("ERROR EXPECTED 3 ARGS\n");
       }
       
       //Rewrite the dummy relative locations to be the actual exit
@@ -40,7 +41,7 @@ ExpressionCheckResult If::checkResultType(std::vector<Type> const& storedTypes, 
       auto lhsCheck = _args[1]->checkResultType(storedTypes, level);
       auto rhsCheck = _args[2]->checkResultType(storedTypes, level);
 
-
+      //TODO: args[0] check
       //Handle general cases
       if (lhsCheck.result == ExpressionCheckResult::Valid && rhsCheck.result == ExpressionCheckResult::Valid) {
         
