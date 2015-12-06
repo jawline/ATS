@@ -45,24 +45,9 @@ void Expression::setEntry(SafeExpression stmt) {
 }
 
 void Expression::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList) {
-  switch (_type) {
-    case Stored:
-      Helper::pushArgumentTop(_storedIndex, buffer);
-      break;
-    default:
-      printf("Could not JIT\n");
-      break;
-  }
+  printf("JIT shouldnt be called on base type\n");
 }
 
 ExpressionCheckResult Expression::checkResultType(std::vector<Type> const& storedTypes, unsigned int level) {
-
-  switch (_type) {
-
-    case Stored:
-      return ExpressionCheckResult{ExpressionCheckResult::Valid, storedTypes[_storedIndex]};
-
-    default:
-      return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Boolean)};
-  }
+  return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Boolean)};
 }

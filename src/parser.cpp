@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "jit/expr/arith.h"
 #include "jit/expr/atom.h"
+#include "jit/expr/sval.h"
 #include "jit/expr/fcall.h"
 #include "jit/expr/if.h"
 #include "jit/jcallbacks.h"
@@ -153,7 +154,7 @@ int Parser::getArg(std::string arg, std::vector<std::string> const& argList) {
 
 SafeExpression Parser::parseArg(char const*& input, std::vector<std::string> const& argList) {
 	Token next = _tokeniser.nextToken(input);
-	return SafeExpression(new Expression(Stored, getArg(next.asString(), argList)));
+	return SafeExpression(new SVal(getArg(next.asString(), argList)));
 }
 
 SafeExpression Parser::parseBlock(char const*& input, std::vector<std::string> const& argList) {

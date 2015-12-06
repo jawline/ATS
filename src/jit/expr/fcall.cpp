@@ -4,7 +4,7 @@
 
 using namespace JIT::Expressions;
 
-FCall::FCall(std::vector<SafeExpression> const& args) : Expression(IfType, args) {}
+FCall::FCall(std::vector<SafeExpression> const& args) : Expression(FunctionCall, args) {}
 
 void FCall::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList) {
       //TODO: SCARY! This will break with over 6 args, work out a nice way to do this
