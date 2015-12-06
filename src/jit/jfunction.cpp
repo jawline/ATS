@@ -7,6 +7,7 @@ using namespace Assembler;
 Function::Function(SafeStatement const& stmt, size_t numArgs) {
   _storedFn = nullptr;
   _stmt = stmt;
+  _stmt->setEntry(_stmt);
   _numArgs = numArgs;
 }
 

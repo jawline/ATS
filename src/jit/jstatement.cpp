@@ -5,6 +5,7 @@
 using namespace JIT;
 
 //TODO: callbackStatement can cause a leak as the ref counter will never deref
+//TODO: entryRef will do the same
 
 Statement::Statement(int64_t val) {
   _type = Atom;
@@ -46,6 +47,13 @@ void* Statement::getCallback() const {
 
 int Statement::getNumArgs() const {
   return _args.size();
+}
+
+void Statement::setEntry(SafeStatement stmt) {
+  _entryRef = stmt;
+  for (unsigned int i = 0; i < _args.size(); i++) {
+    _args[i]->setEntry(stmt);
+  }
 }
 
 void Statement::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Statement*, size_t>>& unresolvedList) {
@@ -159,6 +167,21 @@ StatementCheckResult Statement::checkResultType(std::vector<Type> const& storedT
       return StatementCheckResult{StatementCheckResult::Valid, Type(TypeIdentifier::Integer)};
     }
 
+    case If: {
+      auto lhsCheck = _args[1]->checkResultType(storedTypes);
+      auto rhsCheck = _args[2]->checkResultType(storedTypes);
+
+      if (lhsCheck.result != StatementCheckResult::Valid || rhsCheck.result != StatementCheckResult::Valid) {
+        return StatementCheckResult{StatementCheckResult::Invalid, Type(TypeIdentifier::Integer)};
+      }
+
+      if (lhsCheck.resultType.getTypeID() != rhsCheck.resultType.getTypeID()) {
+        return StatementCheckResult{StatementCheckResult::Invalid, Type(TypeIdentifier::Integer)};  
+      }
+
+      return StatementCheckResult{StatementCheckResult::Valid, lhsCheck.resultType};
+    }
+
     case NativeCallback: {
       
       if (_callbackStatement == nullptr) {
@@ -175,6 +198,11 @@ StatementCheckResult Statement::checkResultType(std::vector<Type> const& storedT
         }
 
         argTypes.push_back(checkResult.resultType);
+      }
+
+      if (_callbackStatement.get() == _entryRef.get()) {
+        printf("can't currently support fn recursion TODO: BIG DEAL");
+        return StatementCheckResult{StatementCheckResult::Invalid, Type(TypeIdentifier::Integer)};
       }
 
       return _callbackStatement->checkResultType(argTypes);

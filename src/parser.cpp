@@ -256,10 +256,14 @@ bool Parser::innerParse(char const*& input) {
 		if (checkResult.result != StatementCheckResult::Valid) {
 			printf("Cannot run fn because of type error\n");
 		} else {
+			printf("Running Line\n");
 			if (checkResult.resultType.getTypeID() == TypeIdentifier::Integer) {
 				printf("Line Result: %li\n", fn.run());
-			} else {
+			} else if (checkResult.resultType.getTypeID() == TypeIdentifier::Boolean) {
 				printf("Line Result: %s\n", fn.run() ? "true" : "false");
+			} else {
+				fn.run();
+				printf("TODO: I don't know how to print this line");
 			}
 		}
 	} else if (next.id() == FUNCTION) {

@@ -34,6 +34,8 @@ namespace JIT {
 
           void* _callbackLocation;
           SafeStatement _callbackStatement;
+
+          SafeStatement _entryRef;
           
           size_t _storedIndex;
           
@@ -48,6 +50,8 @@ namespace JIT {
           void* getCallback() const;
           int getNumArgs() const;
           void updateCallback(void* newCallback, SafeStatement callbackStatement);
+
+          void setEntry(SafeStatement stmt);
 
           StatementCheckResult checkResultType(std::vector<Type> const& storedTypes);
     };

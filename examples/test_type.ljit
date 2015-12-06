@@ -1,6 +1,3 @@
-fn k -> (5)
-fn r -> (10)
+fn sub(n) -> (if n (sub (- n 1)) (true))
 
-fn z(kv) -> (+ kv 15)
-
-(true)
+(sub 150)
