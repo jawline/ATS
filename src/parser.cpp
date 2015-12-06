@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "jit/expr/arith.h"
 #include "jit/expr/atom.h"
+#include "jit/expr/fcall.h"
 #include "jit/expr/if.h"
 #include "jit/jcallbacks.h"
 
@@ -130,7 +131,8 @@ SafeExpression Parser::parseFunctionCall(char const*& input, std::vector<std::st
 	} else if (ifExpr) {
 		result = SafeExpression(new If(args));
 	} else {
-		result = SafeExpression(new Expression(type, callback, args));
+		//Will be resolved later on in parsing with the actual fn it points to
+		result = SafeExpression(new FCall(args));
 	}
 
 	if (type == FunctionCall && callback == nullptr) {
