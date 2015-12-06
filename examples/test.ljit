@@ -1,14 +1,3 @@
-fn even(n) -> (if n (odd (- n 1)) 1)
-fn odd(n) -> (if n (even (- n 1)) 0)
-fn fact(n) -> (if n (* n (fact (- n 1))) 1)
-
-(even 100000)
-(odd 100000)
-(fact 25)
-
-fn fss(x,y,z) -> (* x (* y z))
-(fss 5 10 3)
-
-(* (* 5 19) (- 10 5))
-(+ (odd 5) 5)
-(+ (+ 5 10) 12)
+fn ppp -> (15)
+fn sub(n) -> (if (n) (true) (false))
+(sub 15)

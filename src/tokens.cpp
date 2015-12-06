@@ -46,7 +46,7 @@ int Token::asInt() const {
 }
 
 bool Token::asBool() const {
-	return _data.compare("true") ? true : false;
+	return _data.compare("true") == 0 ? true : false;
 }
 
 unsigned int Token::line() const {

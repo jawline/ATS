@@ -287,7 +287,7 @@ bool Parser::innerParse(char const*& input) {
 			if (checkResult.resultType.getTypeID() == TypeIdentifier::Integer) {
 				printf("Line Result: %li\n", fn.run());
 			} else if (checkResult.resultType.getTypeID() == TypeIdentifier::Boolean) {
-				printf("Line Result: %s\n", fn.run() ? "true" : "false");
+				printf("Line Result: %s\n", fn.run() != 0 ? "true" : "false");
 			} else {
 				fn.run();
 				printf("TODO: I don't know how to print this line");
