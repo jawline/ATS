@@ -1,6 +1,6 @@
 #include "jstatement.h"
-#include "jhelper.h"
-#include "jcallbacks.h"
+#include "../jhelper.h"
+#include "../jcallbacks.h"
 
 using namespace JIT;
 
@@ -117,10 +117,10 @@ void Statement::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<State
       break;
     }
 
-    case NativeCallback: {
+    case FunctionCall: {
 
       //TODO: SCARY! This will break with over 6 args, work out a nice way to do this
-      //printf("TODO: NativeCallback arg set is broken with over 6 args\n");
+      //printf("TODO: FunctionCall arg set is broken with over 6 args\n");
       for (unsigned int i = 0; i < _args.size(); i++) {
         _args[i]->write(buffer, unresolvedList);
       }
@@ -182,7 +182,7 @@ StatementCheckResult Statement::checkResultType(std::vector<Type> const& storedT
       return StatementCheckResult{StatementCheckResult::Valid, lhsCheck.resultType};
     }
 
-    case NativeCallback: {
+    case FunctionCall: {
       
       if (_callbackStatement == nullptr) {
         return StatementCheckResult{StatementCheckResult::Invalid, Type(TypeIdentifier::Integer)};  

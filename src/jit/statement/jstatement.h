@@ -2,8 +2,8 @@
 #define _JSTATEMENT_DEF_H_
 #include <memory>
 #include <vector>
-#include "./jtype.h"
-#include "../utils/bytebuffer.h"
+#include "../jtype.h"
+#include "../../utils/bytebuffer.h"
 
 namespace JIT {
 
@@ -15,7 +15,7 @@ namespace JIT {
         Multiply,
         Divide,
         If,
-        NativeCallback
+        FunctionCall
     };
 
     struct StatementCheckResult {

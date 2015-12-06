@@ -103,7 +103,7 @@ SafeStatement Parser::parseFunctionCall(char const*& input, std::vector<std::str
 		type = If;
 		numExpectedArgs = 3;
 	} else {
-		type = NativeCallback;
+		type = FunctionCall;
 		callback = nullptr;
 		numExpectedArgs = -1;
 	}
@@ -115,7 +115,7 @@ SafeStatement Parser::parseFunctionCall(char const*& input, std::vector<std::str
 
 	auto result = SafeStatement(new Statement(type, callback, args));
 
-	if (type == NativeCallback && callback == nullptr) {
+	if (type == FunctionCall && callback == nullptr) {
 		_unresolved.push_back(pair<string, SafeStatement>(name, result));
 	}
 
