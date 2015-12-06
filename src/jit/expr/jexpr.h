@@ -14,7 +14,7 @@ namespace JIT {
         Subtract,
         Multiply,
         Divide,
-        If,
+        IfType,
         FunctionCall
     };
 

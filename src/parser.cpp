@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include "jit/expr/arith.h"
 #include "jit/expr/atom.h"
+#include "jit/expr/if.h"
 #include "jit/jcallbacks.h"
 
 using namespace Assembler;
@@ -89,6 +90,7 @@ SafeExpression Parser::parseFunctionCall(char const*& input, std::vector<std::st
 	ExpressionType type;
 	void* callback = nullptr;
 	bool arith = false;
+	bool ifExpr = false;
 	int numExpectedArgs;
 	
 	if (name.compare("+") == 0) {
@@ -108,7 +110,8 @@ SafeExpression Parser::parseFunctionCall(char const*& input, std::vector<std::st
 		arith = true;
 		numExpectedArgs = 2;
 	} else if (name.compare("if") == 0) {
-		type = If;
+		type = IfType;
+		ifExpr = true;
 		numExpectedArgs = 3;
 	} else {
 		type = FunctionCall;
@@ -124,6 +127,8 @@ SafeExpression Parser::parseFunctionCall(char const*& input, std::vector<std::st
 	SafeExpression result;
 	if (arith) {
 		result = SafeExpression(new Arithmetic(type, args));
+	} else if (ifExpr) {
+		result = SafeExpression(new If(args));
 	} else {
 		result = SafeExpression(new Expression(type, callback, args));
 	}

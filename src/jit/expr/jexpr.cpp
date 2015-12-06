@@ -50,38 +50,6 @@ void Expression::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expr
     case Stored:
       Helper::pushArgumentTop(_storedIndex, buffer);
       break;
-    case If: {
-      
-      //Execute condition
-      _args[0]->write(buffer, unresolvedList);
-      
-      //Write a jump instruction with BS location
-      size_t elseAddr = Helper::jumpRelativeTopEqualZero(buffer, 0xDEAD);
-      _args[1]->write(buffer, unresolvedList);
-      
-      //Write a jump location to avoid the else
-      size_t exitAddr = Helper::jumpRelative(buffer, 0xDEAD);
-      
-      size_t elseLocation = buffer.current();
-      
-      //If the if comes with an else then write it otherwise write 0
-      if (_args.size() == 3) {
-        _args[2]->write(buffer, unresolvedList);
-      } else {
-        Helper::pushNumber(0, buffer);
-      }
-      
-      //Rewrite the dummy relative locations to be the actual exit
-      size_t exitLocation = buffer.current();
-
-      auto elseJmpNextInstruction = elseAddr + sizeof(int32_t);
-      auto exitJmpNextInstruction = exitAddr + sizeof(int32_t);
-
-      //In retrospect, maybe this isn't so dirty
-      buffer.insert((int32_t)(elseLocation - elseJmpNextInstruction), elseAddr);
-      buffer.insert((int32_t)(exitLocation - exitJmpNextInstruction), exitAddr);
-      break;
-    }
 
     case FunctionCall: {
 
@@ -112,21 +80,6 @@ void Expression::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expr
 ExpressionCheckResult Expression::checkResultType(std::vector<Type> const& storedTypes, unsigned int level) {
 
   switch (_type) {
-    
-    case If: {
-      auto lhsCheck = _args[1]->checkResultType(storedTypes, level);
-      auto rhsCheck = _args[2]->checkResultType(storedTypes, level);
-
-      if (lhsCheck.result != ExpressionCheckResult::Valid || rhsCheck.result != ExpressionCheckResult::Valid) {
-        return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Integer)};
-      }
-
-      if (lhsCheck.resultType.getTypeID() != rhsCheck.resultType.getTypeID()) {
-        return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Integer)};  
-      }
-
-      return ExpressionCheckResult{ExpressionCheckResult::Valid, lhsCheck.resultType};
-    }
 
     case FunctionCall: {
       
