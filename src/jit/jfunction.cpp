@@ -36,6 +36,10 @@ size_t Function::getNumArgs() const {
 	return _numArgs;
 }
 
+SafeStatement Function::statement() const {
+  return _stmt;
+}
+
 void Function::rewriteCallbacks() {
 
 	if (!_storedFn) {

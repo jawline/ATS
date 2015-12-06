@@ -29,8 +29,12 @@ namespace JIT {
         private:
           StatementType _type;
           int64_t _val;
-          void* _callback;
+
+          void* _callbackLocation;
+          SafeStatement _callbackStatement;
+          
           size_t _storedIndex;
+          
           std::vector<SafeStatement> _args;
         public:
           Statement(int64_t val);
@@ -40,7 +44,7 @@ namespace JIT {
           void write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Statement*, size_t>>& unresolvedList);
           void* getCallback() const;
           int getNumArgs() const;
-          void updateCallback(void* newCallback);
+          void updateCallback(void* newCallback, SafeStatement callbackStatement);
 
           StatementCheckResult checkResultType(std::vector<Type> const& storedTypes);
     };

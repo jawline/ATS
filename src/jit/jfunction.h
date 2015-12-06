@@ -22,6 +22,7 @@ namespace JIT {
 		int64_t run();
 		JFPTR getFnPtr();
 
+		SafeStatement statement() const;
 		StatementCheckResult checkResultType(std::vector<Type> const& storedTypes);
 
 		size_t getNumArgs() const;

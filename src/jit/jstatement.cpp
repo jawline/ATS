@@ -21,16 +21,18 @@ Statement::Statement(StatementType type, std::vector<SafeStatement> const& args)
 
 Statement::Statement(StatementType type, void* callback, std::vector<SafeStatement> const& args) {
   _type = type;
-  _callback = callback;
+  _callbackLocation = callback;
+  _callbackStatement = nullptr;
   _args = args;
 }
 
-void Statement::updateCallback(void* callback) {
-  _callback = callback;
+void Statement::updateCallback(void* callback, SafeStatement callbackStatement) {
+  _callbackLocation = callback;
+  _callbackStatement = callbackStatement;
 }
 
 void* Statement::getCallback() const {
-  return _callback;
+  return _callbackLocation;
 }
 
 int Statement::getNumArgs() const {
@@ -97,6 +99,7 @@ void Statement::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<State
       buffer.insert((int32_t)(exitLocation - exitJmpNextInstruction), exitAddr);
       break;
     }
+
     case NativeCallback: {
 
       //TODO: SCARY! This will break with over 6 args, work out a nice way to do this
@@ -109,9 +112,9 @@ void Statement::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<State
         Helper::setArgumentStackTop(i - 1, buffer);
       }
 
-      size_t addressStart = Helper::callFunction(_callback ? _callback : ((void*)Callbacks::unresolved), buffer);
+      size_t addressStart = Helper::callFunction(_callbackLocation ? _callbackLocation : ((void*)Callbacks::unresolved), buffer);
 
-      if (_callback == nullptr) {
+      if (_callbackLocation == nullptr) {
         unresolvedList.push_back(std::pair<Statement*, size_t>(this, addressStart));
       }
 
@@ -145,6 +148,27 @@ StatementCheckResult Statement::checkResultType(std::vector<Type> const& storedT
       }
 
       return StatementCheckResult{StatementCheckResult::Valid, Type(TypeIdentifier::Integer)};
+    }
+
+    case NativeCallback: {
+      
+      if (_callbackStatement == nullptr) {
+        return StatementCheckResult{StatementCheckResult::Invalid, Type(TypeIdentifier::Integer)};  
+      }
+
+      std::vector<Type> argTypes;
+
+      for (unsigned int i = 0; i < _args.size(); i++) {
+        auto checkResult = _args[i]->checkResultType(storedTypes);
+
+        if (checkResult.result != StatementCheckResult::Valid) {
+          return StatementCheckResult{StatementCheckResult::Invalid, Type(TypeIdentifier::Integer)};
+        }
+
+        argTypes.push_back(checkResult.resultType);
+      }
+
+      return _callbackStatement->checkResultType(argTypes);
     }
 
     case Stored:
