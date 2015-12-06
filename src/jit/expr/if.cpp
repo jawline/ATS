@@ -41,13 +41,33 @@ ExpressionCheckResult If::checkResultType(std::vector<Type> const& storedTypes, 
       auto rhsCheck = _args[2]->checkResultType(storedTypes, level);
 
 
-      if (lhsCheck.result != ExpressionCheckResult::Valid || rhsCheck.result != ExpressionCheckResult::Valid) {
-        return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Integer)};
+      //Handle general cases
+      if (lhsCheck.result == ExpressionCheckResult::Valid && rhsCheck.result == ExpressionCheckResult::Valid) {
+        
+        if (lhsCheck.resultType.getTypeID() != rhsCheck.resultType.getTypeID()) {
+          return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Integer)};  
+        }
+
+        return ExpressionCheckResult{ExpressionCheckResult::Valid, lhsCheck.resultType};
       }
 
-      if (lhsCheck.resultType.getTypeID() != rhsCheck.resultType.getTypeID()) {
-        return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Integer)};  
+      if (lhsCheck.result == ExpressionCheckResult::Invalid) {
+        return lhsCheck;
       }
 
-      return ExpressionCheckResult{ExpressionCheckResult::Valid, lhsCheck.resultType};
+      if (rhsCheck.result == ExpressionCheckResult::Invalid) {
+        return rhsCheck;
+      }
+
+      //Handle the case where one or both sides infinately recurse
+      ExpressionCheckResult::ExpressionCheckResult goodResult = ExpressionCheckResult{ExpressionCheckResult::InfinateRecursion, Type(TypeIdentifier::Integer)};
+
+      //If either side MAY not infinately recurse then return a good result
+      if (lhsCheck.result != ExpressionCheckResult::InfinateRecursion) {
+        goodResult = lhsCheck;
+      } else if (rhsCheck.result != ExpressionCheckResult::InfinateRecursion) {
+        goodResult = rhsCheck;
+      }
+
+      return goodResult;
 }

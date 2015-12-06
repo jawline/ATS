@@ -271,8 +271,12 @@ bool Parser::innerParse(char const*& input) {
 		}
 		fn.rewriteCallbacks();
 
+		printf("Checking Lines\n");
+
 		std::vector<Type> argTypes;
 		auto checkResult = fn.checkResultType(argTypes);
+
+		printf("Running Line\n");
 
 		if (checkResult.result != ExpressionCheckResult::Valid) {
 			printf("Cannot run fn because of type error\n");
@@ -287,6 +291,7 @@ bool Parser::innerParse(char const*& input) {
 				printf("TODO: I don't know how to print this line");
 			}
 		}
+
 	} else if (next.id() == FUNCTION) {
 		if (!parseFunction(input, _functions)) {
 			return false;

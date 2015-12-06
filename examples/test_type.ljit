@@ -1,2 +1,2 @@
-fn sub(n) -> (if n (sub (- n 1)) (true))
-(sub 150)
+fn sub(n) -> (sub n)
+(sub 10)
