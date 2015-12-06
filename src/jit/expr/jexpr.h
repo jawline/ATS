@@ -1,5 +1,5 @@
-#ifndef _JSTATEMENT_DEF_H_
-#define _JSTATEMENT_DEF_H_
+#ifndef _jexpr_DEF_H_
+#define _jexpr_DEF_H_
 #include <memory>
 #include <vector>
 #include "../jtype.h"
@@ -57,4 +57,4 @@ namespace JIT {
     };
 }
 
-#endif //_JSTATEMENT_DEF_H_
+#endif //_jexpr_DEF_H_
