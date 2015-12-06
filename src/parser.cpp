@@ -276,10 +276,12 @@ bool Parser::innerParse(char const*& input) {
 		std::vector<Type> argTypes;
 		auto checkResult = fn.checkResultType(argTypes);
 
-		printf("Running Line\n");
-
 		if (checkResult.result != ExpressionCheckResult::Valid) {
-			printf("Cannot run fn because of type error\n");
+			if (checkResult.result == ExpressionCheckResult::InfinateRecursion) {
+				printf("This line could never feasibly terminate\n");
+			} else {
+				printf("Cannot run fn because of type error\n");
+			}
 		} else {
 			printf("Running Line\n");
 			if (checkResult.resultType.getTypeID() == TypeIdentifier::Integer) {
