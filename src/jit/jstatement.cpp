@@ -143,7 +143,7 @@ void Statement::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<State
   }
 }
 
-StatementCheckResult Statement::checkResultType(std::vector<Type> const& storedTypes) {
+StatementCheckResult Statement::checkResultType(std::vector<Type> const& storedTypes, unsigned int level) {
 
   switch (_type) {
     case Atom:
@@ -153,8 +153,8 @@ StatementCheckResult Statement::checkResultType(std::vector<Type> const& storedT
     case Subtract:
     case Multiply:
     case Divide: {
-      auto lhsCheck = _args[0]->checkResultType(storedTypes);
-      auto rhsCheck = _args[1]->checkResultType(storedTypes);
+      auto lhsCheck = _args[0]->checkResultType(storedTypes, level);
+      auto rhsCheck = _args[1]->checkResultType(storedTypes, level);
       
       if (lhsCheck.result != StatementCheckResult::Valid || rhsCheck.result != StatementCheckResult::Valid) {
         return StatementCheckResult{StatementCheckResult::Invalid, Type(TypeIdentifier::Integer)};
@@ -168,8 +168,8 @@ StatementCheckResult Statement::checkResultType(std::vector<Type> const& storedT
     }
 
     case If: {
-      auto lhsCheck = _args[1]->checkResultType(storedTypes);
-      auto rhsCheck = _args[2]->checkResultType(storedTypes);
+      auto lhsCheck = _args[1]->checkResultType(storedTypes, level);
+      auto rhsCheck = _args[2]->checkResultType(storedTypes, level);
 
       if (lhsCheck.result != StatementCheckResult::Valid || rhsCheck.result != StatementCheckResult::Valid) {
         return StatementCheckResult{StatementCheckResult::Invalid, Type(TypeIdentifier::Integer)};
@@ -191,7 +191,7 @@ StatementCheckResult Statement::checkResultType(std::vector<Type> const& storedT
       std::vector<Type> argTypes;
 
       for (unsigned int i = 0; i < _args.size(); i++) {
-        auto checkResult = _args[i]->checkResultType(storedTypes);
+        auto checkResult = _args[i]->checkResultType(storedTypes, level);
 
         if (checkResult.result != StatementCheckResult::Valid) {
           return StatementCheckResult{StatementCheckResult::Invalid, Type(TypeIdentifier::Integer)};
@@ -201,11 +201,15 @@ StatementCheckResult Statement::checkResultType(std::vector<Type> const& storedT
       }
 
       if (_callbackStatement.get() == _entryRef.get()) {
-        printf("can't currently support fn recursion TODO: BIG DEAL");
-        return StatementCheckResult{StatementCheckResult::Invalid, Type(TypeIdentifier::Integer)};
+        if (level > 0 ) {
+          printf("TODO: UNCAUGHT RECURSION\n");
+          return StatementCheckResult{StatementCheckResult::Invalid, Type(TypeIdentifier::Integer)};
+        } else {
+          return _callbackStatement->checkResultType(argTypes, level + 1);
+        }
       }
 
-      return _callbackStatement->checkResultType(argTypes);
+      return _callbackStatement->checkResultType(argTypes, level);
     }
 
     case Stored:

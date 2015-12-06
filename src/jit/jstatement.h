@@ -53,7 +53,7 @@ namespace JIT {
 
           void setEntry(SafeStatement stmt);
 
-          StatementCheckResult checkResultType(std::vector<Type> const& storedTypes);
+          StatementCheckResult checkResultType(std::vector<Type> const& storedTypes, unsigned int level);
     };
 }
 

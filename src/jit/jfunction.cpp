@@ -63,7 +63,7 @@ StatementCheckResult Function::checkResultType(std::vector<Type> const& storedTy
     return StatementCheckResult{StatementCheckResult::Invalid, Type(TypeIdentifier::Boolean)};
   }
 
-  return _stmt->checkResultType(storedTypes);
+  return _stmt->checkResultType(storedTypes, 0);
 }
 
 int64_t Function::run() {
