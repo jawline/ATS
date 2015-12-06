@@ -10,13 +10,8 @@ using namespace Expressions;
 Expression::Expression(ExpressionType type, std::vector<SafeExpression> const& args) {
   _type = type;
   _args = args;
-}
-
-Expression::Expression(ExpressionType type, void* callback, std::vector<SafeExpression> const& args) {
-  _type = type;
-  _callbackLocation = callback;
+  _callbackLocation = nullptr;
   _callbackExpression = nullptr;
-  _args = args;
 }
 
 void Expression::updateCallback(void* callback, SafeExpression callbackExpression) {

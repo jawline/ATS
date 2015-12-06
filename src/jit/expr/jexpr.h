@@ -38,8 +38,6 @@ namespace JIT {
 
         public:
           Expression(ExpressionType type, std::vector<SafeExpression> const& args);
-          Expression(ExpressionType type, void* callback, std::vector<SafeExpression> const& args);
-
           void setEntry(SafeExpression stmt);
 
           /**

@@ -1,2 +1,2 @@
 fn count(n) -> (if (n) (count (- n 1)) (0))
-(count 2)
+(count 150)
