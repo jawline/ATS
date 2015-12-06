@@ -1,7 +1,7 @@
 #Backup files
 *~
 
-*/bin/*
+bin/*
 
 # Object files
 *.o
@@ -35,4 +35,4 @@
 
 # Debug files
 *.dSYM/
-*.DS_store
+**/.DS_Store

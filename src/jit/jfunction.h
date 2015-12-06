@@ -7,23 +7,23 @@
 namespace JIT {
 	class Function {
 	private:
-		void prepare(SafeExpression const& stmt);
+		void prepare(Expressions::SafeExpression const& stmt);
 		JFPTR _storedFn;
-		std::vector<std::pair<Expression*, size_t>> _unresolvedCallList;
+		std::vector<std::pair<Expressions::Expression*, size_t>> _unresolvedCallList;
 		size_t _fnSize;
 		size_t _numArgs;
-		SafeExpression _stmt;
+		Expressions::SafeExpression _stmt;
 
 	public:
-		Function(SafeExpression const& stmt, size_t numArgs);
+		Function(Expressions::SafeExpression const& stmt, size_t numArgs);
 		~Function();
 
 		void rewriteCallbacks();
 		int64_t run();
 		JFPTR getFnPtr();
 
-		SafeExpression Expression() const;
-		ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes);
+		Expressions::SafeExpression expression() const;
+		Expressions::ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes);
 
 		size_t getNumArgs() const;
 	};

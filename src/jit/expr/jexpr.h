@@ -6,7 +6,7 @@
 #include "../../utils/bytebuffer.h"
 
 namespace JIT {
-
+  namespace Expressions {
     enum ExpressionType {
         Atom,
         Stored,
@@ -55,6 +55,7 @@ namespace JIT {
 
           ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes, unsigned int level);
     };
+  }
 }
 
 #endif //_jexpr_DEF_H_

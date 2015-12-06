@@ -3,6 +3,7 @@
 
 using namespace JIT;
 using namespace Assembler;
+using namespace Expressions;
 
 Function::Function(SafeExpression const& stmt, size_t numArgs) {
   _storedFn = nullptr;
@@ -37,7 +38,7 @@ size_t Function::getNumArgs() const {
 	return _numArgs;
 }
 
-SafeExpression Function::Expression() const {
+SafeExpression Function::expression() const {
   return _stmt;
 }
 

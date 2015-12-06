@@ -14,11 +14,11 @@ namespace Assembler {
 	private:
 		Tokeniser _tokeniser;
 		map<string, JIT::SafeFunction> _functions;
-		vector<pair<string, JIT::SafeExpression>> _unresolved;
-		JIT::SafeExpression parseAtom(char const*& input);
-		JIT::SafeExpression parseArg(char const*& input, std::vector<std::string> const& argList);
-		JIT::SafeExpression parseFunctionCall(char const*& input, std::vector<std::string> const& argList);
-		JIT::SafeExpression parseBlock(char const*& input, std::vector<std::string> const& argList);
+		vector<pair<string, JIT::Expressions::SafeExpression>> _unresolved;
+		JIT::Expressions::SafeExpression parseAtom(char const*& input);
+		JIT::Expressions::SafeExpression parseArg(char const*& input, std::vector<std::string> const& argList);
+		JIT::Expressions::SafeExpression parseFunctionCall(char const*& input, std::vector<std::string> const& argList);
+		JIT::Expressions::SafeExpression parseBlock(char const*& input, std::vector<std::string> const& argList);
 		bool resolveAll();
 		int getArg(std::string arg, std::vector<std::string> const& argList);
 		bool parseFunctionArguments(char const*& input, std::vector<std::string>& argList);

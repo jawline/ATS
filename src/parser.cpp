@@ -5,11 +5,12 @@
 
 using namespace Assembler;
 using namespace JIT;
+using namespace Expressions;
 
 Parser::Parser() {}
 Parser::~Parser() {}
 
-#define CHECK(x) if (!x) { return nullptr; }
+#define CHECK(x) if (x == nullptr) { return nullptr; }
 
 SafeExpression Parser::parseAtom(char const*& input) {
 	auto token = _tokeniser.nextToken(input);
@@ -33,7 +34,7 @@ bool Parser::resolveAll() {
 				return false;
 			}
 			
-			_unresolved[i].second->updateCallback((void*)_functions[_unresolved[i].first]->getFnPtr(), _functions[_unresolved[i].first]->Expression());
+			_unresolved[i].second->updateCallback((void*)_functions[_unresolved[i].first]->getFnPtr(), _functions[_unresolved[i].first]->expression());
 		
 			//Remove updated item and offset i to compensate
 			_unresolved.erase(_unresolved.begin() + i);
@@ -131,7 +132,7 @@ int Parser::getArg(std::string arg, std::vector<std::string> const& argList) {
 	return -1;
 }
 
-JIT::SafeExpression Parser::parseArg(char const*& input, std::vector<std::string> const& argList) {
+SafeExpression Parser::parseArg(char const*& input, std::vector<std::string> const& argList) {
 	Token next = _tokeniser.nextToken(input);
 	return SafeExpression(new Expression(Stored, getArg(next.asString(), argList)));
 }

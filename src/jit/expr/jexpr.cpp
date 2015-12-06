@@ -3,6 +3,7 @@
 #include "../jcallbacks.h"
 
 using namespace JIT;
+using namespace Expressions;
 
 //TODO: callbackExpression can cause a leak as the ref counter will never deref
 //TODO: entryRef will do the same
