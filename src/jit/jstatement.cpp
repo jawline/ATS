@@ -4,9 +4,18 @@
 
 using namespace JIT;
 
+//TODO: callbackStatement can cause a leak as the ref counter will never deref
+
 Statement::Statement(int64_t val) {
   _type = Atom;
+  _atomType = TypeIdentifier::Integer;
   _val = val;
+}
+
+Statement::Statement(bool val) {
+  _type = Atom;
+  _atomType = TypeIdentifier::Boolean;
+  _val = val ? 1 : 0;
 }
 
 Statement::Statement(StatementType type, size_t storedIndex) {

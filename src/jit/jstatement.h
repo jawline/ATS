@@ -28,6 +28,8 @@ namespace JIT {
     class Statement {
         private:
           StatementType _type;
+
+          TypeIdentifier _atomType;
           int64_t _val;
 
           void* _callbackLocation;
@@ -38,6 +40,7 @@ namespace JIT {
           std::vector<SafeStatement> _args;
         public:
           Statement(int64_t val);
+          Statement(bool val);
           Statement(StatementType type, size_t argNum);
           Statement(StatementType type, std::vector<SafeStatement> const& args);
           Statement(StatementType type, void* callback, std::vector<SafeStatement> const& args);

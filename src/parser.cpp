@@ -13,7 +13,7 @@ Parser::~Parser() {}
 
 SafeStatement Parser::parseAtom(char const*& input) {
 	auto token = _tokeniser.nextToken(input);
-	return token.id() == NUM ? SafeStatement(new Statement(token.asInt())) : nullptr;
+	return token.id() == NUM ? SafeStatement(new Statement((int64_t)token.asInt())) : nullptr;
 }
 
 bool Parser::resolveAll() {
