@@ -24,7 +24,7 @@ void FCall::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expressio
       }
 }
 
-ExpressionCheckResult FCall::checkResultType(std::vector<Type> const& storedTypes, unsigned int level) {
+ExpressionCheckResult FCall::checkResultType(std::vector<Type> const& storedTypes) {
 
       if (_callbackExpression == nullptr) {
         return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Integer)};  
@@ -33,7 +33,7 @@ ExpressionCheckResult FCall::checkResultType(std::vector<Type> const& storedType
       std::vector<Type> argTypes;
 
       for (unsigned int i = 0; i < _args.size(); i++) {
-        auto checkResult = _args[i]->checkResultType(storedTypes, level);
+        auto checkResult = _args[i]->checkResultType(storedTypes);
 
         if (checkResult.result != ExpressionCheckResult::Valid) {
           return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Integer)};
@@ -62,5 +62,5 @@ ExpressionCheckResult FCall::checkResultType(std::vector<Type> const& storedType
         }
       }
 
-      return _callbackExpression->checkResultType(argTypes, level);
+      return _callbackExpression->checkResultType(argTypes);
 }

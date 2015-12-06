@@ -37,9 +37,9 @@ void If::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*,
       buffer.insert((int32_t)(exitLocation - exitJmpNextInstruction), exitAddr);
 }
 
-ExpressionCheckResult If::checkResultType(std::vector<Type> const& storedTypes, unsigned int level) {
-      auto lhsCheck = _args[1]->checkResultType(storedTypes, level);
-      auto rhsCheck = _args[2]->checkResultType(storedTypes, level);
+ExpressionCheckResult If::checkResultType(std::vector<Type> const& storedTypes) {
+      auto lhsCheck = _args[1]->checkResultType(storedTypes);
+      auto rhsCheck = _args[2]->checkResultType(storedTypes);
 
       //TODO: args[0] check
       //Handle general cases

@@ -1,3 +1,2 @@
-fn ppp -> (15)
-fn sub(n) -> (if (n) (true) (false))
-(sub 15)
+fn count(n) -> (if (n) (count (- n 1)) (0))
+(count 2)

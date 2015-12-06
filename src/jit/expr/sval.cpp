@@ -11,6 +11,6 @@ void SVal::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression
 	Helper::pushArgumentTop(_index, buffer);
 }
 
-ExpressionCheckResult SVal::checkResultType(std::vector<Type> const& storedTypes, unsigned int level) {
+ExpressionCheckResult SVal::checkResultType(std::vector<Type> const& storedTypes) {
 	return ExpressionCheckResult{ExpressionCheckResult::Valid, storedTypes[_index]};
 }

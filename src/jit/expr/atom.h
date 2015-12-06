@@ -13,7 +13,7 @@ namespace JIT {
         	Atom(bool v);
 
         	void write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList);
-			ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes, unsigned int level);
+			ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes);
 		};
 	}
 }

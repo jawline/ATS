@@ -17,6 +17,6 @@ void Atom::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression
      Helper::pushNumber(_val, buffer);
 }
 
-ExpressionCheckResult Atom::checkResultType(std::vector<Type> const& storedTypes, unsigned int level) {
+ExpressionCheckResult Atom::checkResultType(std::vector<Type> const& storedTypes) {
 	return ExpressionCheckResult{ExpressionCheckResult::Valid, Type(_atomType)};
 }

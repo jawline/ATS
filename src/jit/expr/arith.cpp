@@ -30,9 +30,9 @@ void Arithmetic::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expr
 	};
 }
 
-ExpressionCheckResult Arithmetic::checkResultType(std::vector<Type> const& storedTypes, unsigned int level) {
-      auto lhsCheck = _args[0]->checkResultType(storedTypes, level);
-      auto rhsCheck = _args[1]->checkResultType(storedTypes, level);
+ExpressionCheckResult Arithmetic::checkResultType(std::vector<Type> const& storedTypes) {
+      auto lhsCheck = _args[0]->checkResultType(storedTypes);
+      auto rhsCheck = _args[1]->checkResultType(storedTypes);
       
       if (lhsCheck.result != ExpressionCheckResult::Valid || rhsCheck.result != ExpressionCheckResult::Valid) {
         return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Integer)};
