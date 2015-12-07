@@ -265,13 +265,14 @@ bool Parser::innerParse(char const*& input) {
 	if (next.id() == LPAREN) {
 		SafeExpression block = parseBlock(input, std::vector<std::string>());
 		CHECK(block);
+		
 		Function fn = Function(block, 0);
+		
 		if (!resolveAll()) {
 			return false;
 		}
-		fn.rewriteCallbacks();
 
-		printf("Checking Lines\n");
+		fn.rewriteCallbacks();
 
 		std::vector<Type> argTypes;
 		auto checkResult = fn.checkResultType(argTypes);
@@ -283,7 +284,7 @@ bool Parser::innerParse(char const*& input) {
 				printf("Cannot run fn because of type error\n");
 			}
 		} else {
-			printf("Running Line\n");
+			
 			if (checkResult.resultType.getTypeID() == TypeIdentifier::Integer) {
 				printf("Line Result: %li\n", fn.run());
 			} else if (checkResult.resultType.getTypeID() == TypeIdentifier::Boolean) {

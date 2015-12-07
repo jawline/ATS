@@ -56,7 +56,7 @@ namespace JIT {
           /**
            * Type checker
            */
-          virtual ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes);
+          virtual ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes, std::vector<SafeExpression>& potentiallyCalledFunctions);
     };
   }
 }

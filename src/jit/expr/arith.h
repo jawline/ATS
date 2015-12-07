@@ -10,7 +10,7 @@ namespace JIT {
         	Arithmetic(ExpressionType type, std::vector<SafeExpression> const& args);
 
         	void write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList);
-			ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes);
+			ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes, std::vector<SafeExpression>& potentiallyCalledFunctions);
 		};
 	}
 }

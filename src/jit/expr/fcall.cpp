@@ -24,7 +24,20 @@ void FCall::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expressio
       }
 }
 
-ExpressionCheckResult FCall::checkResultType(std::vector<Type> const& storedTypes) {
+bool FCall::isRecursion(std::vector<Type> const& storedTypes, std::vector<Type> const& argTypes, std::vector<SafeExpression> const& potentiallyCalledFunctions) {
+  for (unsigned int i = 0; i < potentiallyCalledFunctions.size(); i++) {
+    if (potentiallyCalledFunctions[i].get() == _callbackExpression.get()) {
+        printf("TODO: Returning true on recursion even though type signatures arent verified\n");
+        //TODO: DO TYPE CHECKING ON ARGS
+        //Calling a function with 1 sig does not verify for all
+        return true;
+    }
+  }
+
+  return false;
+}
+
+ExpressionCheckResult FCall::checkResultType(std::vector<Type> const& storedTypes, std::vector<SafeExpression>& potentiallyCalledFunctions) {
 
       if (_callbackExpression == nullptr) {
         return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Integer)};  
@@ -33,7 +46,7 @@ ExpressionCheckResult FCall::checkResultType(std::vector<Type> const& storedType
       std::vector<Type> argTypes;
 
       for (unsigned int i = 0; i < _args.size(); i++) {
-        auto checkResult = _args[i]->checkResultType(storedTypes);
+        auto checkResult = _args[i]->checkResultType(storedTypes, potentiallyCalledFunctions);
 
         if (checkResult.result != ExpressionCheckResult::Valid) {
           return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Integer)};
@@ -43,24 +56,10 @@ ExpressionCheckResult FCall::checkResultType(std::vector<Type> const& storedType
       }
 
       //Is this a recursion?
-      if (_callbackExpression.get() == _entryRef.get()) {
-
-        //Work out if the call carries the same signature
-        bool diffTypes = false;
-        if (argTypes.size() == storedTypes.size()) {
-          for (unsigned int i = 0; i < argTypes.size(); i++) {
-            if (!argTypes[i].equals(storedTypes[i])) {
-              diffTypes = true;
-            }
-          }
-        } else {
-          diffTypes = true;
-        }
-
-        if (!diffTypes) {
-          return ExpressionCheckResult{ExpressionCheckResult::InfinateRecursion, Type(TypeIdentifier::Integer)};
-        }
+      if (isRecursion(storedTypes, argTypes, potentiallyCalledFunctions)) {
+        return ExpressionCheckResult{ExpressionCheckResult::InfinateRecursion, Type(TypeIdentifier::Integer)};
       }
 
-      return _callbackExpression->checkResultType(argTypes);
+      potentiallyCalledFunctions.push_back(_callbackExpression);
+      return _callbackExpression->checkResultType(argTypes, potentiallyCalledFunctions);
 }
