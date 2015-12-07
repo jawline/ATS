@@ -23,6 +23,11 @@ namespace JIT {
       Type resultType;
     };
 
+    struct BaseCheckResult {
+      bool recursion;
+      Type type;
+    };
+
     typedef std::shared_ptr<class Expression> SafeExpression;
 
     class Expression {
@@ -56,6 +61,7 @@ namespace JIT {
           /**
            * Type checker
            */
+          virtual BaseCheckResult getBaseType(std::vector<Type> const& storedTypes, std::vector<SafeExpression>& potentiallyCalledFunctions) { return BaseCheckResult{false, Unknown}; }
           virtual ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes, std::vector<SafeExpression>& potentiallyCalledFunctions);
     };
   }
