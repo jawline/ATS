@@ -5,7 +5,8 @@ namespace JIT {
 	
 	enum TypeIdentifier {
 		Integer,
-		Boolean
+		Boolean,
+		Unknown
 	};
 
 	class Type {

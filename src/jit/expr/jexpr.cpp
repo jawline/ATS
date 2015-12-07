@@ -39,5 +39,5 @@ void Expression::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expr
 }
 
 ExpressionCheckResult Expression::checkResultType(std::vector<Type> const& storedTypes, std::vector<SafeExpression>& potentiallyCalledFunctions) {
-  return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Boolean)};
+  return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Unknown)};
 }

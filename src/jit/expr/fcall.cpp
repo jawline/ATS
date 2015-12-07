@@ -40,7 +40,7 @@ bool FCall::isRecursion(std::vector<Type> const& storedTypes, std::vector<Type> 
 ExpressionCheckResult FCall::checkResultType(std::vector<Type> const& storedTypes, std::vector<SafeExpression>& potentiallyCalledFunctions) {
 
       if (_callbackExpression == nullptr) {
-        return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Integer)};  
+        return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Unknown)};  
       }
 
       std::vector<Type> argTypes;
@@ -49,7 +49,7 @@ ExpressionCheckResult FCall::checkResultType(std::vector<Type> const& storedType
         auto checkResult = _args[i]->checkResultType(storedTypes, potentiallyCalledFunctions);
 
         if (checkResult.result != ExpressionCheckResult::Valid) {
-          return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Integer)};
+          return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Unknown)};
         }
 
         argTypes.push_back(checkResult.resultType);
@@ -57,7 +57,7 @@ ExpressionCheckResult FCall::checkResultType(std::vector<Type> const& storedType
 
       //Is this a recursion?
       if (isRecursion(storedTypes, argTypes, potentiallyCalledFunctions)) {
-        return ExpressionCheckResult{ExpressionCheckResult::InfinateRecursion, Type(TypeIdentifier::Integer)};
+        return ExpressionCheckResult{ExpressionCheckResult::InfinateRecursion, Type(TypeIdentifier::Unknown)};
       }
 
       potentiallyCalledFunctions.push_back(_callbackExpression);

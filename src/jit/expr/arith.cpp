@@ -34,12 +34,12 @@ ExpressionCheckResult Arithmetic::checkResultType(std::vector<Type> const& store
       auto lhsCheck = _args[0]->checkResultType(storedTypes, potentiallyCalledFunctions);
       auto rhsCheck = _args[1]->checkResultType(storedTypes, potentiallyCalledFunctions);
       
-      if (lhsCheck.result != ExpressionCheckResult::Valid || rhsCheck.result != ExpressionCheckResult::Valid) {
-        return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Integer)};
+      if (lhsCheck.result == ExpressionCheckResult::Invalid || rhsCheck.result == ExpressionCheckResult::Invalid) {
+        return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Unknown)};
       }
 
       if (lhsCheck.resultType.getTypeID() != TypeIdentifier::Integer || rhsCheck.resultType.getTypeID() != TypeIdentifier::Integer) {
-        return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Integer)};  
+        return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Unknown)};  
       }
 
       return ExpressionCheckResult{ExpressionCheckResult::Valid, Type(TypeIdentifier::Integer)};

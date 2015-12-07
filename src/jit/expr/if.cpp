@@ -46,7 +46,7 @@ ExpressionCheckResult If::checkResultType(std::vector<Type> const& storedTypes, 
       if (lhsCheck.result == ExpressionCheckResult::Valid && rhsCheck.result == ExpressionCheckResult::Valid) {
         
         if (lhsCheck.resultType.getTypeID() != rhsCheck.resultType.getTypeID()) {
-          return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Integer)};  
+          return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Unknown)};  
         }
 
         return ExpressionCheckResult{ExpressionCheckResult::Valid, lhsCheck.resultType};
@@ -61,7 +61,7 @@ ExpressionCheckResult If::checkResultType(std::vector<Type> const& storedTypes, 
       }
 
       //Handle the case where one or both sides infinately recurse
-      ExpressionCheckResult::ExpressionCheckResult goodResult = ExpressionCheckResult{ExpressionCheckResult::InfinateRecursion, Type(TypeIdentifier::Integer)};
+      ExpressionCheckResult::ExpressionCheckResult goodResult = ExpressionCheckResult{ExpressionCheckResult::InfinateRecursion, Type(TypeIdentifier::Unknown)};
 
       //If either side MAY not infinately recurse then return a good result
       if (lhsCheck.result != ExpressionCheckResult::InfinateRecursion) {
