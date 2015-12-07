@@ -37,6 +37,8 @@ bool FCall::isRecursion(std::vector<Type> const& storedTypes, std::vector<Type> 
   return false;
 }
 
+BaseCheckResult FCall::getBaseType(std::vector<Type> const& storedTypes, std::vector<SafeExpression>& potentiallyCalledFunctions) {}
+
 ExpressionCheckResult FCall::checkResultType(std::vector<Type> const& storedTypes, std::vector<SafeExpression>& potentiallyCalledFunctions) {
 
       if (_callbackExpression == nullptr) {
