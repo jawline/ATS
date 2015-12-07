@@ -30,6 +30,21 @@ void Arithmetic::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expr
 	};
 }
 
+BaseCheckResult Arithmetic::getBaseType(std::vector<Type> const& storedTypes, std::vector<SafeExpression>& potentiallyCalledFunctions) {
+	auto lhsType = _args[0]->getBaseType(storedTypes, potentiallyCalledFunctions);
+	auto rhsType = _args[1]->getBaseType(storedTypes, potentiallyCalledFunctions);
+
+	if (!lhsType.recursion) {
+		return lhsType;
+	}
+
+	if (!rhsType.recursion) {
+		return rhsType;
+	}
+
+	return BaseCheckResult{false, TypeIdentifier::Unknown};
+}
+
 ExpressionCheckResult Arithmetic::checkResultType(std::vector<Type> const& storedTypes, std::vector<SafeExpression>& potentiallyCalledFunctions) {
       auto lhsCheck = _args[0]->checkResultType(storedTypes, potentiallyCalledFunctions);
       auto rhsCheck = _args[1]->checkResultType(storedTypes, potentiallyCalledFunctions);
