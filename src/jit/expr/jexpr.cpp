@@ -39,6 +39,6 @@ void Expression::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expr
   printf("JIT shouldnt be called on base type\n");
 }
 
-ExpressionCheckResult Expression::checkResultType(std::vector<Type> const& storedTypes, std::vector<SafeExpression>& potentiallyCalledFunctions) {
+ExpressionCheckResult Expression::checkResultType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) {
   return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Unknown)};
 }

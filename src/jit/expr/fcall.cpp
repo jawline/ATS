@@ -24,20 +24,34 @@ void FCall::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expressio
       }
 }
 
-bool FCall::isRecursion(std::vector<Type> const& storedTypes, std::vector<Type> const& argTypes, std::vector<SafeExpression> const& potentiallyCalledFunctions) {
+bool FCall::isRecursion(std::vector<Type> const& storedTypes, std::vector<Type> const& argTypes, std::vector<MethodCall> const& potentiallyCalledFunctions) const {
   for (unsigned int i = 0; i < potentiallyCalledFunctions.size(); i++) {
-    if (potentiallyCalledFunctions[i].get() == _callbackExpression.get()) {
-        printf("TODO: Returning true on recursion even though type signatures arent verified\n");
+    if (potentiallyCalledFunctions[i].stmt.get() == _callbackExpression.get()) {
+
+        if (argTypes.size() == potentiallyCalledFunctions[i].calledWith.size()) {
+
+          bool isMatch = true;
+          for (unsigned int r = 0; r < argTypes.size(); r++) {
+            if (!potentiallyCalledFunctions[i].calledWith[r].equals(argTypes[r])) {
+              isMatch = false;
+              break;
+            }
+          }
+
+          if (isMatch) {
+            return true;
+          }
+        }
+
         //TODO: DO TYPE CHECKING ON ARGS
         //Calling a function with 1 sig does not verify for all
-        return true;
     }
   }
 
   return false;
 }
 
-BaseCheckResult FCall::getBaseType(std::vector<Type> const& storedTypes, std::vector<SafeExpression>& potentiallyCalledFunctions) {
+BaseCheckResult FCall::getBaseType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) {
 
       std::vector<Type> argTypes;
 
@@ -55,11 +69,11 @@ BaseCheckResult FCall::getBaseType(std::vector<Type> const& storedTypes, std::ve
         return BaseCheckResult{true, Unknown};
       }
 
-      potentiallyCalledFunctions.push_back(_callbackExpression);
+      potentiallyCalledFunctions.push_back(MethodCall{_callbackExpression, argTypes});
       return _callbackExpression->getBaseType(storedTypes, potentiallyCalledFunctions);
 }
 
-ExpressionCheckResult FCall::checkResultType(std::vector<Type> const& storedTypes, std::vector<SafeExpression>& potentiallyCalledFunctions) {
+ExpressionCheckResult FCall::checkResultType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) {
 
       if (_callbackExpression == nullptr) {
         return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Unknown)};  
@@ -89,6 +103,6 @@ ExpressionCheckResult FCall::checkResultType(std::vector<Type> const& storedType
         return ExpressionCheckResult{ExpressionCheckResult::InfinateRecursion, baseTypeCheck.type};
       }
 
-      potentiallyCalledFunctions.push_back(_callbackExpression);
+      potentiallyCalledFunctions.push_back(MethodCall{_callbackExpression, argTypes});
       return _callbackExpression->checkResultType(argTypes, potentiallyCalledFunctions);
 }

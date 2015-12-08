@@ -30,6 +30,11 @@ namespace JIT {
 
     typedef std::shared_ptr<class Expression> SafeExpression;
 
+    struct MethodCall {
+      SafeExpression stmt;
+      std::vector<Type> calledWith;
+    };
+
     class Expression {
         protected:
           ExpressionType _type;
@@ -61,8 +66,8 @@ namespace JIT {
           /**
            * Type checker
            */
-          virtual BaseCheckResult getBaseType(std::vector<Type> const& storedTypes, std::vector<SafeExpression>& potentiallyCalledFunctions) { return BaseCheckResult{false, Unknown}; }
-          virtual ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes, std::vector<SafeExpression>& potentiallyCalledFunctions);
+          virtual BaseCheckResult getBaseType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) { return BaseCheckResult{false, Unknown}; }
+          virtual ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions);
     };
   }
 }

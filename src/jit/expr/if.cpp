@@ -37,7 +37,7 @@ void If::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*,
       buffer.insert((int32_t)(exitLocation - exitJmpNextInstruction), exitAddr);
 }
 
-BaseCheckResult If::getBaseType(std::vector<Type> const& storedTypes, std::vector<SafeExpression>& potentiallyCalledFunctions) {
+BaseCheckResult If::getBaseType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) {
   auto lhsType = _args[1]->getBaseType(storedTypes, potentiallyCalledFunctions);
   auto rhsType = _args[2]->getBaseType(storedTypes, potentiallyCalledFunctions);
 
@@ -52,7 +52,7 @@ BaseCheckResult If::getBaseType(std::vector<Type> const& storedTypes, std::vecto
   return BaseCheckResult{false, Unknown};
 }
 
-ExpressionCheckResult If::checkResultType(std::vector<Type> const& storedTypes, std::vector<SafeExpression>& potentiallyCalledFunctions) {
+ExpressionCheckResult If::checkResultType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) {
       auto lhsCheck = _args[1]->checkResultType(storedTypes, potentiallyCalledFunctions);
       auto rhsCheck = _args[2]->checkResultType(storedTypes, potentiallyCalledFunctions);
 

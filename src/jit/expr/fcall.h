@@ -6,13 +6,13 @@ namespace JIT {
 	namespace Expressions {
 		class FCall: public Expression {
 		private:
-			bool isRecursion(std::vector<Type> const& storedTypes, std::vector<Type> const& argTypes, std::vector<SafeExpression> const& potentiallyCalledFunctions);
+			bool isRecursion(std::vector<Type> const& storedTypes, std::vector<Type> const& argTypes, std::vector<MethodCall> const& potentiallyCalledFunctions) const;
         public:
         	FCall(std::vector<SafeExpression> const& args);
 
         	void write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList);
-			ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes, std::vector<SafeExpression>& potentiallyCalledFunctions);
-			BaseCheckResult getBaseType(std::vector<Type> const& storedTypes, std::vector<SafeExpression>& potentiallyCalledFunctions);
+			ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions);
+			BaseCheckResult getBaseType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions);
 		};
 	}
 }

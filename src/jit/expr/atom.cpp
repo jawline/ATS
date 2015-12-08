@@ -17,10 +17,10 @@ void Atom::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression
      Helper::pushNumber(_val, buffer);
 }
 
-BaseCheckResult Atom::getBaseType(std::vector<Type> const& storedTypes, std::vector<SafeExpression>& potentiallyCalledFunctions) {
+BaseCheckResult Atom::getBaseType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) {
 	return BaseCheckResult{false, Type(_atomType)};
 }
 
-ExpressionCheckResult Atom::checkResultType(std::vector<Type> const& storedTypes, std::vector<SafeExpression>& potentiallyCalledFunctions) {
+ExpressionCheckResult Atom::checkResultType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) {
 	return ExpressionCheckResult{ExpressionCheckResult::Valid, Type(_atomType)};
 }

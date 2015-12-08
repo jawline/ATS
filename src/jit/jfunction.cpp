@@ -64,7 +64,7 @@ ExpressionCheckResult Function::checkResultType(std::vector<Type> const& storedT
     return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Boolean)};
   }
 
-  auto calledFunctions = std::vector<SafeExpression>();
+  auto calledFunctions = std::vector<MethodCall>();
 
   return _stmt->checkResultType(storedTypes, calledFunctions);
 }
