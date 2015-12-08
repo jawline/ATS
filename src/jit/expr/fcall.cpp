@@ -81,6 +81,11 @@ ExpressionCheckResult FCall::checkResultType(std::vector<Type> const& storedType
       if (isRecursion(storedTypes, argTypes, potentiallyCalledFunctions)) {
         auto calledFunctionsCopy = potentiallyCalledFunctions;
         auto baseTypeCheck = _callbackExpression->getBaseType(argTypes, calledFunctionsCopy);
+        
+        if (baseTypeCheck.recursion) {
+          printf("TODO: Recursion error handling\n");
+        }
+
         return ExpressionCheckResult{ExpressionCheckResult::InfinateRecursion, baseTypeCheck.type};
       }
 
