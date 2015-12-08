@@ -29,6 +29,7 @@ int Expression::getNumArgs() const {
 
 void Expression::setEntry(SafeExpression stmt) {
   _entryRef = stmt;
+  
   for (unsigned int i = 0; i < _args.size(); i++) {
     _args[i]->setEntry(stmt);
   }

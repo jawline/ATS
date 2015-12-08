@@ -37,7 +37,27 @@ bool FCall::isRecursion(std::vector<Type> const& storedTypes, std::vector<Type> 
   return false;
 }
 
-BaseCheckResult FCall::getBaseType(std::vector<Type> const& storedTypes, std::vector<SafeExpression>& potentiallyCalledFunctions) {}
+BaseCheckResult FCall::getBaseType(std::vector<Type> const& storedTypes, std::vector<SafeExpression>& potentiallyCalledFunctions) {
+
+      std::vector<Type> argTypes;
+
+      for (unsigned int i = 0; i < _args.size(); i++) {
+        auto checkResult = _args[i]->getBaseType(storedTypes, potentiallyCalledFunctions);
+
+        if (checkResult.recursion) {
+          return BaseCheckResult{true, Unknown};
+        }
+
+        argTypes.push_back(checkResult.type);
+      } 
+
+      if (isRecursion(storedTypes, argTypes, potentiallyCalledFunctions)) {
+        return BaseCheckResult{true, Unknown};
+      }
+
+      potentiallyCalledFunctions.push_back(_callbackExpression);
+      return _callbackExpression->getBaseType(storedTypes, potentiallyCalledFunctions);
+}
 
 ExpressionCheckResult FCall::checkResultType(std::vector<Type> const& storedTypes, std::vector<SafeExpression>& potentiallyCalledFunctions) {
 
@@ -59,7 +79,9 @@ ExpressionCheckResult FCall::checkResultType(std::vector<Type> const& storedType
 
       //Is this a recursion?
       if (isRecursion(storedTypes, argTypes, potentiallyCalledFunctions)) {
-        return ExpressionCheckResult{ExpressionCheckResult::InfinateRecursion, Type(TypeIdentifier::Unknown)};
+        auto calledFunctionsCopy = potentiallyCalledFunctions;
+        auto baseTypeCheck = _callbackExpression->getBaseType(argTypes, calledFunctionsCopy);
+        return ExpressionCheckResult{ExpressionCheckResult::InfinateRecursion, baseTypeCheck.type};
       }
 
       potentiallyCalledFunctions.push_back(_callbackExpression);
