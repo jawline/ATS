@@ -295,16 +295,45 @@ bool Parser::innerParse(char const*& input) {
 			}
 		}
 
+	} else if (next.id() == TYPE_ASK) {
+		next = _tokeniser.nextToken(input);
+		next = _tokeniser.peekToken(input);
+
+		if (next.id() == LPAREN) {
+			SafeExpression block = parseBlock(input, std::vector<std::string>());
+			CHECK(block);
+
+			Function fn = Function(block, 0);
+
+			if (!resolveAll()) {
+				return false;
+			}
+
+			fn.rewriteCallbacks();
+
+			std::vector<Type> argTypes;
+			auto checkResult = fn.checkResultType(argTypes);
+
+			printf("Type: %s\n", checkResult.resultType.toString().c_str());
+		} else {
+			printf("Error, expected LPAREN after :t\n");
+			return nullptr;
+		}
+
 	} else if (next.id() == FUNCTION) {
+
 		if (!parseFunction(input, _functions)) {
 			return false;
 		}
+
 		if (!resolveAll()) {
 			return false;
 		}
+
 		for (auto it = _functions.begin(); it != _functions.end(); it++) {
 			it->second->rewriteCallbacks();
 		}
+
 	} else {
 		printf("Expected LPAREN near %s\n", next.debugInfo().c_str());
 		return false;

@@ -2,6 +2,11 @@ fn even(n) -> (if n (odd (- n 1)) true)
 fn odd(n) -> (if n (even (- n 1)) false)
 fn fact(n) -> (if n (* 1 (fact (- n 1))) 1)
 
+fn identity(x) -> (x)
+
 (even 100000)
 (odd 100000)
 (fact 10)
+
+:t (identity 10)
+:t (identity true)

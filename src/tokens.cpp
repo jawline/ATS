@@ -104,6 +104,9 @@ Token Tokeniser::peekToken(char const* input, size_t& len) {
 	} else if (strncmp(input, "(", 1) == 0) {
 		result = Token(LPAREN, input, 1, getCurrentLine());
 		len = 1;
+	} else if (strncmp(input, ":t", 2) == 0) {
+		result = Token(TYPE_ASK, input, 2, getCurrentLine());
+		len = 2;
 	} else if (strncmp(input, ")", 1) == 0) {
 		result = Token(RPAREN, input, 1, getCurrentLine());
 		len = 1;

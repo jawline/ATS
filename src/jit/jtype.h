@@ -1,5 +1,6 @@
 #ifndef _JTYPE_DEF_H_
 #define _JTYPE_DEF_H_
+#include <string>
 
 namespace JIT {
 	
@@ -19,6 +20,17 @@ namespace JIT {
 		TypeIdentifier getTypeID() const;
 
 		bool equals(Type const& other) const { return _id == other._id; }
+
+		std::string toString() {
+			switch (_id) {
+				case Integer:
+					return "int";
+				case Boolean:
+					return "bool";
+				case Unknown:
+					return "unknown";
+			}
+		} const;
 	};
 }
 

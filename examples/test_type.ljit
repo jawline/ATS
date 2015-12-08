@@ -1,3 +1,4 @@
 fn ppp -> (15)
 fn toBool -> (if (ppp) (true) (false))
 (toBool)
+:t (toBool)
