@@ -29,8 +29,10 @@ fn a -> (a)
 :pc (identity true)
 
 :t (pow 14 15)
+:pc (pow 14 15)
 
 :t (gcd 65 39)
+:pc (gcd 65 39)
 
 :t (even 64)
 :pc (even 64)
