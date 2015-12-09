@@ -206,8 +206,7 @@ void Helper::updateAddress(JFPTR ptr, size_t start, void* newAddress) {
 
 void Helper::pushArgumentTop(int argN, Assembler::ByteBuffer& buffer) {
     if (argN == 0) {
-        buffer.insert((uint8_t)0x41);
-        buffer.insert((uint8_t)0x54);
+        buffer.insert((uint8_t)0x57);
     } else if (argN == 1) {
         buffer.insert((uint8_t)0x56);
     } else if (argN == 2) {
