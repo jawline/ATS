@@ -111,6 +111,10 @@ SafeExpression Parser::parseFunctionCall(char const*& input, std::vector<std::st
 		type = Divide;
 		arith = true;
 		numExpectedArgs = 2;
+	} else if (name.compare("%") == 0) {
+		type = Mod;
+		arith = true;
+		numExpectedArgs = 2;
 	} else if (name.compare("if") == 0) {
 		type = IfType;
 		ifExpr = true;

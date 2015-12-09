@@ -128,16 +128,7 @@ Token Tokeniser::peekToken(char const* input, size_t& len) {
 	} else if (strncmp(input, "fn", 2) == 0) {
 		result = Token(FUNCTION, input, 2, getCurrentLine());
 		len = 2;
-	} else if (strncmp(input, "+", 1) == 0) {
-		result = Token(ID, input, 1, getCurrentLine());
-		len = 1;
-	} else if (strncmp(input, "-", 1) == 0) {
-		result = Token(ID, input, 1, getCurrentLine());
-		len = 1;
-	} else if (strncmp(input, "*", 1) == 0) {
-		result = Token(ID, input, 1, getCurrentLine());
-		len = 1;
-	} else if (strncmp(input, "/", 1) == 0) {
+	} else if (strncmp(input, "+", 1) == 0 || strncmp(input, "-", 1) == 0 || strncmp(input, "*", 1) == 0 || strncmp(input, "/", 1) == 0 || strncmp(input, "%", 1) == 0) {
 		result = Token(ID, input, 1, getCurrentLine());
 		len = 1;
 	} else if ((len = nfaMatches(idRegex.start, input)) > 0) {
