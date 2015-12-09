@@ -208,6 +208,18 @@ void Helper::pushArgumentTop(int argN, Assembler::ByteBuffer& buffer) {
     if (argN == 0) {
         buffer.insert((uint8_t)0x41);
         buffer.insert((uint8_t)0x54);
+    } else if (argN == 1) {
+        buffer.insert((uint8_t)0x56);
+    } else if (argN == 2) {
+        buffer.insert((uint8_t)0x52);
+    } else if (argN == 3) {
+        buffer.insert((uint8_t)0x51);
+    } else if (argN == 4) {
+        buffer.insert((uint8_t)0x41);
+        buffer.insert((uint8_t)0x50);
+    } else if (argN == 5) {
+        buffer.insert((uint8_t)0x41);
+        buffer.insert((uint8_t)0x51);
     } else {
         //push [ebp - (argN-1)*8]
         //If I can fit the offset in a single byte use a shorter instruction

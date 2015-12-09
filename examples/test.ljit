@@ -1,12 +1,19 @@
 fn even(n) -> (if n (odd (- n 1)) true)
 fn odd(n) -> (if n (even (- n 1)) false)
-fn fact(n) -> (if n (* 1 (fact (- n 1))) 1)
+fn fact(n) -> (if n (* n (fact (- n 1))) 1)
+
+fn pow(n,r) -> (if r (* n (pow n (- r 1))) 1)
+
+fn pzc(n,r) -> (r)
 
 fn identity(x) -> (x)
 
+(fact 10)
 (even 100000)
 (odd 100000)
-(fact 10)
+(pzc 1 4)
+(pow 2 10)
 
 :t (identity 10)
 :t (identity true)
+:t (pow 14 15)

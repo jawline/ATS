@@ -30,7 +30,7 @@ namespace JIT {
 				case Unknown:
 					return "unknown";
 			}
-		} const;
+		};
 	};
 }
 
