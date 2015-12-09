@@ -206,17 +206,23 @@ void Helper::updateAddress(JFPTR ptr, size_t start, void* newAddress) {
 
 void Helper::pushArgumentTop(int argN, Assembler::ByteBuffer& buffer) {
     if (argN == 0) {
+        //push rdi
         buffer.insert((uint8_t)0x57);
     } else if (argN == 1) {
+        //push rsi
         buffer.insert((uint8_t)0x56);
     } else if (argN == 2) {
+        //push rdx
         buffer.insert((uint8_t)0x52);
     } else if (argN == 3) {
+        //push rcx
         buffer.insert((uint8_t)0x51);
     } else if (argN == 4) {
+        //push r8
         buffer.insert((uint8_t)0x41);
         buffer.insert((uint8_t)0x50);
     } else if (argN == 5) {
+        //push r9
         buffer.insert((uint8_t)0x41);
         buffer.insert((uint8_t)0x51);
     } else {
