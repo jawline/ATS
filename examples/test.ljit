@@ -11,6 +11,8 @@ fn pzc(n,r) -> (r)
 
 fn identity(x) -> (x)
 
+fn a -> (a)
+
 (fact 10)
 (even 100000)
 (odd 100000)
@@ -18,6 +20,7 @@ fn identity(x) -> (x)
 (pow 2 10)
 (/ 6 2)
 (gcd 76 34)
+(a)
 
 :t (identity 10)
 :t (identity true)

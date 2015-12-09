@@ -325,10 +325,10 @@ bool Parser::innerParse(char const*& input) {
 			if (name.compare(":t") == 0) {
 				printf("Type: %s\n", checkResult.resultType.toString().c_str());
 			} else if (name.compare(":pc") == 0) {
-				printf("PC Print\n");
+				printf("Potentially Called: ");
 				for (unsigned int i = 0; i < pcf.size(); i++) {
 					if (i) {
-						printf(" -> ");
+						printf(", ");
 					}
 					printf("%s", pcf[i].stmt->getMarker().c_str());
 				}

@@ -66,12 +66,15 @@ size_t Helper::jumpRelativeTopEqualZero(Assembler::ByteBuffer& buffer, int32_t d
     //cmp rax, 0
     uint8_t cmpRax0[] = { 0x48, 0x83, 0xF8, 0x00 };
     buffer.insert(cmpRax0, sizeof(cmpRax0));
-    
+
     //je $+distance
     buffer.insert((uint8_t)0x0F);
     buffer.insert((uint8_t)0x84);
+
+    //log jump bytes
     size_t addr = buffer.current();
     buffer.insert(distance);
+
     return addr;
 }
 
