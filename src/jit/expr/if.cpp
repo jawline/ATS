@@ -53,6 +53,8 @@ BaseCheckResult If::getBaseType(std::vector<Type> const& storedTypes, std::vecto
 }
 
 ExpressionCheckResult If::checkResultType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) {
+
+      //TODO: This may not work? potentiallyCalledFunctions may be changed by one of the branches leading to a reduction in exploration in the other
       auto lhsCheck = _args[1]->checkResultType(storedTypes, potentiallyCalledFunctions);
       auto rhsCheck = _args[2]->checkResultType(storedTypes, potentiallyCalledFunctions);
 
