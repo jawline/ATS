@@ -7,6 +7,7 @@
 
 namespace JIT {
   namespace Expressions {
+
     enum ExpressionType {
         AtomType,
         Stored,
@@ -14,6 +15,7 @@ namespace JIT {
         Subtract,
         Multiply,
         Divide,
+        Mod,
         IfType,
         FunctionCall
     };

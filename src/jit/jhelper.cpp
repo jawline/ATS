@@ -173,6 +173,30 @@ void Helper::divTopTwoStack(ByteBuffer& buffer) {
     pushBasicResult(buffer);   
 }
 
+void Helper::modTopTwoStack(Assembler::ByteBuffer& buffer) {
+    popTwo(buffer);
+
+    //push rdx
+    buffer.insert((uint8_t)0x52);
+
+    //xor rdx, rdx
+    uint8_t xorRdx[] = {0x48, 0x31, 0xD2 };
+    buffer.insert(xorRdx, sizeof(xorRdx));
+
+    //div rcx
+    uint8_t divRcx[] = {0x48, 0xF7, 0xF1};
+    buffer.insert(divRcx, sizeof(divRcx));
+
+    //mov rax, rdx
+    uint8_t movRax[] = {0x48, 0x89, 0xD0};
+    buffer.insert(movRax, sizeof(movRax));
+
+    //pop rdx
+    buffer.insert((uint8_t)0x5A);
+
+    pushBasicResult(buffer);
+}
+
 void Helper::setArgument(unsigned int num, int64_t val, Assembler::ByteBuffer& buffer) {
     switch (num) {
         case 0: {
