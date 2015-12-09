@@ -299,8 +299,8 @@ bool Parser::innerParse(char const*& input) {
 			}
 		}
 
-	} else if (next.id() == TYPE_ASK) {
-		next = _tokeniser.nextToken(input);
+	} else if (next.id() == QUERY) {
+		auto typeOfQuery = _tokeniser.nextToken(input);
 		next = _tokeniser.peekToken(input);
 
 		if (next.id() == LPAREN) {
@@ -318,7 +318,13 @@ bool Parser::innerParse(char const*& input) {
 			std::vector<Type> argTypes;
 			auto checkResult = fn.checkResultType(argTypes);
 
-			printf("Type: %s\n", checkResult.resultType.toString().c_str());
+			std::string name = typeOfQuery.asString();
+
+			if (name.compare(":t") == 0) {
+				printf("Type: %s\n", checkResult.resultType.toString().c_str());
+			} else if (name.compare(":pc") == 0) {
+				printf("PC Print\n");
+			}
 		} else {
 			printf("Error, expected LPAREN after :t\n");
 			return nullptr;

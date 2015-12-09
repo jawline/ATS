@@ -12,7 +12,7 @@ namespace Assembler {
 		ID,
 		NUM,
 		BOOL,
-		TYPE_ASK,
+		QUERY,
 		COMMA,
 		ARROW,
 		LPAREN,
