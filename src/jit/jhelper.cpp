@@ -205,6 +205,11 @@ void Helper::updateAddress(JFPTR ptr, size_t start, void* newAddress) {
 }
 
 void Helper::pushArgumentTop(int argN, Assembler::ByteBuffer& buffer) {
+    
+    if (argN >= 6) {
+        printf("TODO: I am COMPLETELY broken with > 6 args\n");
+    }
+
     if (argN == 0) {
         //push rdi
         buffer.insert((uint8_t)0x57);
@@ -275,6 +280,7 @@ void Helper::setArgumentStackTop(unsigned int num, Assembler::ByteBuffer& buffer
             break;            
         }
         default:
+            printf("TODO: I AM COMPLETELY BROKEN\n");
             printf("Outside of arg register range (%i)\n", num);
             return;
     }
