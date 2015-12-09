@@ -184,27 +184,32 @@ void Helper::divTopTwoStack(ByteBuffer& buffer) {
 }
 
 void Helper::modTopTwoStack(Assembler::ByteBuffer& buffer) {
-    //popTwo(buffer);
+    //pop R15
+    buffer.insert((uint8_t)0x41);
+    buffer.insert((uint8_t)0x5F);
 
-    //push rdx
-    //buffer.insert((uint8_t)0x52);
+    //pop RAX
+    buffer.insert((uint8_t)0x58);
+
+    //push rdx (It stores arguments and is also used in div)
+    buffer.insert((uint8_t)0x52);
 
     //xor rdx, rdx
-    //uint8_t xorRdx[] = {0x48, 0x31, 0xD2 };
-    //buffer.insert(xorRdx, sizeof(xorRdx));
-
-    //div rcx
-    //uint8_t divRcx[] = {0x48, 0xF7, 0xF1};
-    //buffer.insert(divRcx, sizeof(divRcx));
-
+    uint8_t xorRdx[] = {0x48, 0x31, 0xD2 };
+    buffer.insert(xorRdx, sizeof(xorRdx));
+    
+    //idiv r15
+    uint8_t divRcx[] = {0x49, 0xF7, 0xFF};
+    buffer.insert(divRcx, sizeof(divRcx));
+    
     //mov rax, rdx
-    //uint8_t movRax[] = {0x48, 0x89, 0xD0};
-    //buffer.insert(movRax, sizeof(movRax));
+    uint8_t movRax[] = {0x48, 0x89, 0xD0};
+    buffer.insert(movRax, sizeof(movRax));
 
     //pop rdx
-    //buffer.insert((uint8_t)0x5A);
+    buffer.insert((uint8_t)0x5A);
 
-    //pushBasicResult(buffer);
+    pushBasicResult(buffer);
 }
 
 void Helper::setArgument(unsigned int num, int64_t val, Assembler::ByteBuffer& buffer) {

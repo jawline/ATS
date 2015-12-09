@@ -14,6 +14,7 @@ fn identity(x) -> (x)
 (pzc 1 4)
 (pow 2 10)
 (/ 6 2)
+(% 5 2)
 
 :t (identity 10)
 :t (identity true)

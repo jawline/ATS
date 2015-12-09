@@ -25,7 +25,7 @@ void Arithmetic::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expr
 	    case Mod:
 	      _args[0]->write(buffer, unresolvedList);
 	      _args[1]->write(buffer, unresolvedList);
-	      Helper::divTopTwoStack(buffer);
+	      Helper::modTopTwoStack(buffer);
 	      break;	    	
 	    case Divide:
 	      _args[0]->write(buffer, unresolvedList);
