@@ -44,13 +44,14 @@ namespace JIT {
           void* _callbackLocation;
           SafeExpression _callbackExpression;
 
-          SafeExpression _entryRef;
+          std::string _marker;
           
           std::vector<SafeExpression> _args;
 
         public:
           Expression(ExpressionType type, std::vector<SafeExpression> const& args);
-          void setEntry(SafeExpression stmt);
+          void setMarker(std::string const& marker);
+          std::string getMarker() const;
 
           /**
            * Relates to the vmm location of the method being called

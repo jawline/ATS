@@ -15,7 +15,7 @@ namespace JIT {
 		Expressions::SafeExpression _stmt;
 
 	public:
-		Function(Expressions::SafeExpression const& stmt, size_t numArgs);
+		Function(std::string const& name, Expressions::SafeExpression const& stmt, size_t numArgs);
 		~Function();
 
 		void rewriteCallbacks();
@@ -23,7 +23,7 @@ namespace JIT {
 		JFPTR getFnPtr();
 
 		Expressions::SafeExpression expression() const;
-		Expressions::ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes);
+		Expressions::ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes, std::vector<Expressions::MethodCall>& potentialMethods);
 
 		size_t getNumArgs() const;
 	};

@@ -5,11 +5,11 @@ using namespace JIT;
 using namespace Assembler;
 using namespace Expressions;
 
-Function::Function(SafeExpression const& stmt, size_t numArgs) {
+Function::Function(std::string const& name, SafeExpression const& stmt, size_t numArgs) {
   _storedFn = nullptr;
   _stmt = stmt;
-  _stmt->setEntry(_stmt);
   _numArgs = numArgs;
+  _stmt->setMarker(name);
 }
 
 Function::~Function() {
@@ -58,15 +58,13 @@ void Function::rewriteCallbacks() {
 	}
 }
 
-ExpressionCheckResult Function::checkResultType(std::vector<Type> const& storedTypes) {
+ExpressionCheckResult Function::checkResultType(std::vector<Type> const& storedTypes, std::vector<Expressions::MethodCall>& potentialMethods) {
   
   if (_numArgs != storedTypes.size()) {
     return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Boolean)};
   }
 
-  auto calledFunctions = std::vector<MethodCall>();
-
-  return _stmt->checkResultType(storedTypes, calledFunctions);
+  return _stmt->checkResultType(storedTypes, potentialMethods);
 }
 
 int64_t Function::run() {

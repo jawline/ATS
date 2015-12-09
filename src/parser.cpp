@@ -253,7 +253,7 @@ bool Parser::parseFunction(char const*& input, std::map<std::string, SafeFunctio
 	
 	SafeExpression block = parseBlock(input, args);
 	CHECK(block);
-	functionList[name] = SafeFunction(new Function(block, args.size()));
+	functionList[name] = SafeFunction(new Function(name, block, args.size()));
 
 	return true;
 }
@@ -266,11 +266,13 @@ bool Parser::innerParse(char const*& input) {
 		return true;
 	}
 
+	auto pcf = std::vector<MethodCall>();
+
 	if (next.id() == LPAREN) {
 		SafeExpression block = parseBlock(input, std::vector<std::string>());
 		CHECK(block);
 		
-		Function fn = Function(block, 0);
+		Function fn = Function("anonymous", block, 0);
 		
 		if (!resolveAll()) {
 			return false;
@@ -279,7 +281,7 @@ bool Parser::innerParse(char const*& input) {
 		fn.rewriteCallbacks();
 
 		std::vector<Type> argTypes;
-		auto checkResult = fn.checkResultType(argTypes);
+		auto checkResult = fn.checkResultType(argTypes, pcf);
 
 		if (checkResult.result != ExpressionCheckResult::Valid) {
 			if (checkResult.result == ExpressionCheckResult::InfinateRecursion) {
@@ -307,7 +309,7 @@ bool Parser::innerParse(char const*& input) {
 			SafeExpression block = parseBlock(input, std::vector<std::string>());
 			CHECK(block);
 
-			Function fn = Function(block, 0);
+			Function fn = Function("anonymous", block, 0);
 
 			if (!resolveAll()) {
 				return false;
@@ -316,7 +318,7 @@ bool Parser::innerParse(char const*& input) {
 			fn.rewriteCallbacks();
 
 			std::vector<Type> argTypes;
-			auto checkResult = fn.checkResultType(argTypes);
+			auto checkResult = fn.checkResultType(argTypes, pcf);
 
 			std::string name = typeOfQuery.asString();
 
@@ -324,6 +326,13 @@ bool Parser::innerParse(char const*& input) {
 				printf("Type: %s\n", checkResult.resultType.toString().c_str());
 			} else if (name.compare(":pc") == 0) {
 				printf("PC Print\n");
+				for (unsigned int i = 0; i < pcf.size(); i++) {
+					if (i) {
+						printf(" -> ");
+					}
+					printf("%s", pcf[i].stmt->getMarker().c_str());
+				}
+				printf("\n");
 			}
 		} else {
 			printf("Error, expected LPAREN after :t\n");

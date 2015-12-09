@@ -27,12 +27,12 @@ int Expression::getNumArgs() const {
   return _args.size();
 }
 
-void Expression::setEntry(SafeExpression stmt) {
-  _entryRef = stmt;
-  
-  for (unsigned int i = 0; i < _args.size(); i++) {
-    _args[i]->setEntry(stmt);
-  }
+void Expression::setMarker(std::string const& marker) {
+  _marker = marker;
+}
+
+std::string Expression::getMarker() const {
+  return _marker;
 }
 
 void Expression::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList) {
