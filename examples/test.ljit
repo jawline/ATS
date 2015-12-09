@@ -13,7 +13,7 @@ fn identity(x) -> (x)
 (odd 100000)
 (pzc 1 4)
 (pow 2 10)
-(% 5 2)
+(/ 6 2)
 
 :t (identity 10)
 :t (identity true)

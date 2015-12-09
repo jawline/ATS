@@ -156,45 +156,55 @@ void Helper::subTopTwoStack(ByteBuffer& buffer) {
 void Helper::mulTopTwoStack(ByteBuffer& buffer) {
     popTwo(buffer);
     
-    //mul rcx
-    uint8_t mulRcx[] = {0x48, 0xF7, 0xE1};
+    //imul rcx
+    uint8_t mulRcx[] = {0x48, 0xF7, 0xE9};
     buffer.insert(mulRcx, sizeof(mulRcx));
     
     pushBasicResult(buffer);   
 }
 
 void Helper::divTopTwoStack(ByteBuffer& buffer) {
-    popTwo(buffer);
+
+    //pop R15
+    buffer.insert((uint8_t)0x41);
+    buffer.insert((uint8_t)0x5F);
+
+    //pop RAX
+    buffer.insert((uint8_t)0x58);
+
+    //xor rdx, rdx
+    uint8_t xorRdx[] = {0x48, 0x31, 0xD2 };
+    buffer.insert(xorRdx, sizeof(xorRdx));
     
-    //div rcx
-    uint8_t divRcx[] = {0x48, 0xF7, 0xF1};
+    //idiv r15
+    uint8_t divRcx[] = {0x49, 0xF7, 0xFF};
     buffer.insert(divRcx, sizeof(divRcx));
     
     pushBasicResult(buffer);   
 }
 
 void Helper::modTopTwoStack(Assembler::ByteBuffer& buffer) {
-    popTwo(buffer);
+    //popTwo(buffer);
 
     //push rdx
-    buffer.insert((uint8_t)0x52);
+    //buffer.insert((uint8_t)0x52);
 
     //xor rdx, rdx
-    uint8_t xorRdx[] = {0x48, 0x31, 0xD2 };
-    buffer.insert(xorRdx, sizeof(xorRdx));
+    //uint8_t xorRdx[] = {0x48, 0x31, 0xD2 };
+    //buffer.insert(xorRdx, sizeof(xorRdx));
 
     //div rcx
-    uint8_t divRcx[] = {0x48, 0xF7, 0xF1};
-    buffer.insert(divRcx, sizeof(divRcx));
+    //uint8_t divRcx[] = {0x48, 0xF7, 0xF1};
+    //buffer.insert(divRcx, sizeof(divRcx));
 
     //mov rax, rdx
-    uint8_t movRax[] = {0x48, 0x89, 0xD0};
-    buffer.insert(movRax, sizeof(movRax));
+    //uint8_t movRax[] = {0x48, 0x89, 0xD0};
+    //buffer.insert(movRax, sizeof(movRax));
 
     //pop rdx
-    buffer.insert((uint8_t)0x5A);
+    //buffer.insert((uint8_t)0x5A);
 
-    pushBasicResult(buffer);
+    //pushBasicResult(buffer);
 }
 
 void Helper::setArgument(unsigned int num, int64_t val, Assembler::ByteBuffer& buffer) {
