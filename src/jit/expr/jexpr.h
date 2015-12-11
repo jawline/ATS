@@ -57,6 +57,7 @@ namespace JIT {
           std::string getMarker() const;
 
           ExpressionType getExpressionType() const;
+          std::vector<SafeExpression> getArguments() const;
 
           /**
            * Relates to the address of the method being called

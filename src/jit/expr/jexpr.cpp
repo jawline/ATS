@@ -27,6 +27,10 @@ void* Expression::getCallback() const {
   return _callbackLocation;
 }
 
+std::vector<SafeExpression> Expression::getArguments() const {
+  return _args;
+}
+
 int Expression::getNumArgs() const {
   return _args.size();
 }

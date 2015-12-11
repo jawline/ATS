@@ -3,6 +3,9 @@
 using namespace JIT;
 using namespace JIT::Expressions;
 
-SafeExpression Simplifier::simplify(SafeExpression expression) {}
+SafeExpression Simplifier::simplify(SafeExpression expression) {
+}
 
-SafeExpression Simplifier::isAtomic(SafeExpression expression) {}
+bool Simplifier::isAtomic(SafeExpression expression) {
+	return expression->getExpressionType() == ExpressionType::AtomType;
+}
