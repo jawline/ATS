@@ -58,6 +58,7 @@ namespace JIT {
 
           ExpressionType getExpressionType() const;
           std::vector<SafeExpression> getArguments() const;
+          void setArguments(std::vector<SafeExpression> const& args);
 
           /**
            * Relates to the address of the method being called

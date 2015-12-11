@@ -24,3 +24,7 @@ BaseCheckResult Atom::getBaseType(std::vector<Type> const& storedTypes, std::vec
 ExpressionCheckResult Atom::checkResultType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) {
 	return ExpressionCheckResult{ExpressionCheckResult::Valid, Type(_atomType)};
 }
+
+int64_t Atom::getValueActual() const {
+	return _val;
+}

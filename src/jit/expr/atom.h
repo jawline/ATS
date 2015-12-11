@@ -12,6 +12,8 @@ namespace JIT {
         	Atom(int64_t v);
         	Atom(bool v);
 
+        	int64_t getValueActual() const;
+
         	void write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList);
 
         	BaseCheckResult getBaseType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions);

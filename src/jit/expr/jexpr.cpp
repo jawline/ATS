@@ -35,6 +35,10 @@ int Expression::getNumArgs() const {
   return _args.size();
 }
 
+void Expression::setArguments(std::vector<SafeExpression> const& args) {
+  _args = args;
+}
+
 void Expression::setMarker(std::string const& marker) {
   _marker = marker;
 }
