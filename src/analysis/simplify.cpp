@@ -4,6 +4,11 @@ using namespace JIT;
 using namespace JIT::Expressions;
 
 SafeExpression Simplifier::simplify(SafeExpression expression) {
+	std::vector<SafeExpression> simplifiedArguments;
+	
+	for (unsigned int i = 0; i < expression->getArguments().size(); i++) {
+		simplifiedArguments.push_back(simplify(expression->getArguments()[i]));
+	}
 }
 
 bool Simplifier::isAtomic(SafeExpression expression) {
