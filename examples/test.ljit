@@ -22,6 +22,8 @@ fn a -> (a)
 (gcd 76 34)
 (a)
 
+(+ (+ 6 5) 9)
+
 :t (identity 10)
 :pc (identity 10)
 

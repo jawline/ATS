@@ -29,8 +29,6 @@ SafeExpression Simplifier::remakeExpression(JIT::Expressions::SafeExpression exp
 	}
 
 	if (expression->getExpressionType() == ExpressionType::Add) {
-		printf("Simplifying add\n");
-
 		if (isAtomic(expression->getArguments()[0]) && isAtomic(expression->getArguments()[1])) {
 			auto lhs = (Atom*) expression->getArguments()[0].get();
 			auto rhs = (Atom*) expression->getArguments()[1].get();
@@ -41,6 +39,11 @@ SafeExpression Simplifier::remakeExpression(JIT::Expressions::SafeExpression exp
 	}
 
 	return expression;
+}
+
+bool Simplifier::isArith(JIT::Expressions::SafeExpression expression) const {
+	auto type = expression->getExpressionType();
+	return type == ExpressionType::Add || type == ExpressionType::Subtract || type == ExpressionType::Multiply || type == ExpressionType::Divide;
 }
 
 bool Simplifier::isAtomic(SafeExpression expression) const {

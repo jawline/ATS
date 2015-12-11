@@ -1,6 +1,7 @@
 #include "parser.h"
 #include <vector>
 #include <stdio.h>
+#include "analysis/simplify.h"
 #include "jit/expr/arith.h"
 #include "jit/expr/atom.h"
 #include "jit/expr/sval.h"
@@ -253,7 +254,7 @@ bool Parser::parseFunction(char const*& input, std::map<std::string, SafeFunctio
 	
 	SafeExpression block = parseBlock(input, args);
 	CHECK(block);
-	functionList[name] = SafeFunction(new Function(name, block, args.size()));
+	functionList[name] = SafeFunction(new Function(name, Simplifier().simplify(block), args.size()));
 
 	return true;
 }
@@ -272,7 +273,7 @@ bool Parser::innerParse(char const*& input) {
 		SafeExpression block = parseBlock(input, std::vector<std::string>());
 		CHECK(block);
 		
-		Function fn = Function("anonymous", block, 0);
+		Function fn = Function("anonymous", Simplifier().simplify(block), 0);
 		
 		if (!resolveAll()) {
 			return false;
