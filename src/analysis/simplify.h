@@ -5,6 +5,7 @@
 class Simplifier {
 private:
 	bool isAtomic(JIT::Expressions::SafeExpression expression);
+	JIT::Expressions::SafeExpression remakeExpression(JIT::Expressions::SafeExpression expression, std::vector<JIT::Expressions::SafeExpression> const& remadeArguments);
 
 public:
 	JIT::Expressions::SafeExpression simplify(JIT::Expressions::SafeExpression expression);

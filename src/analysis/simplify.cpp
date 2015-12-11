@@ -10,6 +10,10 @@ SafeExpression Simplifier::simplify(SafeExpression expression) {
 		simplifiedArguments.push_back(simplify(expression->getArguments()[i]));
 	}
 
+	return remakeExpression(expression, simplifiedArguments);
+}
+
+SafeExpression Simplifier::remakeExpression(JIT::Expressions::SafeExpression expression, std::vector<JIT::Expressions::SafeExpression> const& remadeArguments) {
 	return expression;
 }
 
