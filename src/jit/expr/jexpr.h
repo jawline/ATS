@@ -56,6 +56,8 @@ namespace JIT {
           void setMarker(std::string const& marker);
           std::string getMarker() const;
 
+          ExpressionType getExpressionType() const;
+
           /**
            * Relates to the address of the method being called
            */

@@ -19,6 +19,10 @@ void Expression::updateCallback(void* callback, SafeExpression callbackExpressio
   _callbackExpression = callbackExpression;
 }
 
+ExpressionType Expression::getExpressionType() const {
+  return _type;
+}
+
 void* Expression::getCallback() const {
   return _callbackLocation;
 }
