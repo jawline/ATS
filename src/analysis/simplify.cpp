@@ -9,6 +9,8 @@ SafeExpression Simplifier::simplify(SafeExpression expression) {
 	for (unsigned int i = 0; i < expression->getArguments().size(); i++) {
 		simplifiedArguments.push_back(simplify(expression->getArguments()[i]));
 	}
+
+	return expression;
 }
 
 bool Simplifier::isAtomic(SafeExpression expression) {
