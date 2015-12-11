@@ -44,6 +44,9 @@ namespace JIT {
           void* _callbackLocation;
           SafeExpression _callbackExpression;
 
+          /**
+           * Marker used to identify the statement when printing (often "")
+           */
           std::string _marker;
           
           std::vector<SafeExpression> _args;
@@ -54,7 +57,7 @@ namespace JIT {
           std::string getMarker() const;
 
           /**
-           * Relates to the vmm location of the method being called
+           * Relates to the address of the method being called
            */
           void* getCallback() const;
           void updateCallback(void* newCallback, SafeExpression callbackExpression);
