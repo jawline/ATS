@@ -4,6 +4,8 @@
 
 class Simplifier {
 private:
+	JIT::Expressions::SafeExpression isAtomic(JIT::Expressions::SafeExpression expression);
+
 public:
 	JIT::Expressions::SafeExpression simplify(JIT::Expressions::SafeExpression expression);
 };
