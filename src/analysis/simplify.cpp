@@ -24,18 +24,34 @@ bool Simplifier::knowHowToSimplify(SafeExpression expression) const {
 SafeExpression Simplifier::remakeExpression(JIT::Expressions::SafeExpression expression) const {
 	
 	if (!knowHowToSimplify(expression)) {
-		printf("Simplifier doesn't know how\n");
 		return expression;
 	}
 
-	if (expression->getExpressionType() == ExpressionType::Add) {
-		if (isAtomic(expression->getArguments()[0]) && isAtomic(expression->getArguments()[1])) {
-			auto lhs = (Atom*) expression->getArguments()[0].get();
-			auto rhs = (Atom*) expression->getArguments()[1].get();
-			return SafeExpression(new Atom(lhs->getValueActual() + rhs->getValueActual()));
+	if (isArith(expression) && isAtomic(expression->getArguments()[0]) && isAtomic(expression->getArguments()[1])) {
+		auto type = expression->getExpressionType();
+
+		auto lhsVal = ((Atom*) expression->getArguments()[0].get())->getValueActual();
+		auto rhsVal = ((Atom*) expression->getArguments()[1].get())->getValueActual();
+
+		int64_t atomicValue;
+
+		if (type == ExpressionType::Add) {
+			atomicValue = lhsVal + rhsVal;
+		} else if (type == ExpressionType::Subtract) {
+			atomicValue = lhsVal - rhsVal;
+		} else if (type == ExpressionType::Multiply) {
+			atomicValue = lhsVal * rhsVal;
+		} else if (type == ExpressionType::Divide) {
+			atomicValue = lhsVal / rhsVal;
+		} else if (type == ExpressionType::Mod) {
+			atomicValue = lhsVal % rhsVal;
 		} else {
-			printf("Non atomic children, cannot simplify\n");
+			printf("ERROR SIMPLIFYING\n");
+			return nullptr;
 		}
+
+		printf("Simplified arithmetic to %i\n", atomicValue);
+		return SafeExpression(new Atom(atomicValue));
 	}
 
 	return expression;
@@ -43,7 +59,7 @@ SafeExpression Simplifier::remakeExpression(JIT::Expressions::SafeExpression exp
 
 bool Simplifier::isArith(JIT::Expressions::SafeExpression expression) const {
 	auto type = expression->getExpressionType();
-	return type == ExpressionType::Add || type == ExpressionType::Subtract || type == ExpressionType::Multiply || type == ExpressionType::Divide;
+	return type == ExpressionType::Add || type == ExpressionType::Subtract || type == ExpressionType::Multiply || type == ExpressionType::Divide || type == ExpressionType::Mod;
 }
 
 bool Simplifier::isAtomic(SafeExpression expression) const {
