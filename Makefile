@@ -4,9 +4,9 @@ endif
 
 #Output executable
 OUTPUT_DIR  = ./bin/
-OUTPUT_FILE = ljit
+OUTPUT_FILE = ats
 
-OUTPUT_LIB_NAME  = ljit
+OUTPUT_LIB_NAME  = ats
 
 ifeq "$(OS)" "Darwin"
 	OUTPUT_LIB = lib$(OUTPUT_LIB_NAME).dylib
