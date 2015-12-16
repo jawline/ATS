@@ -8,4 +8,6 @@ public:
 	virtual JIT::Expressions::SafeExpression doAnalysis(JIT::Expressions::SafeExpression expression) const = 0;
 };
 
+typedef std::shared_ptr<Analysis> SafeAnalysis;
+
 #endif
