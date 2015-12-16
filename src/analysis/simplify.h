@@ -10,7 +10,7 @@ private:
 	JIT::Expressions::SafeExpression remakeExpression(JIT::Expressions::SafeExpression expression) const;
 
 public:
-	JIT::Expressions::SafeExpression simplify(JIT::Expressions::SafeExpression expression) const;
+	JIT::Expressions::SafeExpression doAnalysis(JIT::Expressions::SafeExpression expression) const;
 };
 
 #endif //_SIMPLIFY_TREE_DEF_H_
