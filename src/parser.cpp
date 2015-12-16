@@ -3,6 +3,7 @@
 #include <stdio.h>
 
 #include "analysis/chain.h"
+#include "analysis/summarize.h"
 #include "analysis/simplify.h"
 
 #include "jit/expr/arith.h"
@@ -19,6 +20,7 @@ using namespace Expressions;
 Parser::Parser() {
 	std::vector<SafeAnalysis> anls;
 	anls.push_back(SafeAnalysis(new Simplifier()));
+	anls.push_back(SafeAnalysis(new Summarize()));
 	_chainer = SafeAnalysis(new Chainer(anls));
 }
 
