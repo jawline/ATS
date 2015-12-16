@@ -1,8 +1,8 @@
 #ifndef _SIMPLIFY_TREE_DEF_H_
 #define _SIMPLIFY_TREE_DEF_H_
-#include "../jit/expr/jexpr.h"
+#include "analysis.h"
 
-class Simplifier {
+class Simplifier: public Analysis {
 private:
 	bool isAtomic(JIT::Expressions::SafeExpression expression) const;
 	bool isArith(JIT::Expressions::SafeExpression expression) const;
