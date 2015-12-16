@@ -3,7 +3,7 @@
 #include "analysis.h"
 #include <vector>
 
-class Chainer {
+class Chainer: public Analysis {
 private:
 	std::vector<SafeAnalysis> _analysis;
 public:

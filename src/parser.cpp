@@ -1,7 +1,10 @@
 #include "parser.h"
 #include <vector>
 #include <stdio.h>
+
+#include "analysis/chain.h"
 #include "analysis/simplify.h"
+
 #include "jit/expr/arith.h"
 #include "jit/expr/atom.h"
 #include "jit/expr/sval.h"
@@ -13,7 +16,12 @@ using namespace Assembler;
 using namespace JIT;
 using namespace Expressions;
 
-Parser::Parser() {}
+Parser::Parser() {
+	std::vector<SafeAnalysis> anls;
+	anls.push_back(SafeAnalysis(new Simplifier()));
+	_chainer = SafeAnalysis(new Chainer(anls));
+}
+
 Parser::~Parser() {}
 
 #define CHECK(x) if (x == nullptr) { return nullptr; }
@@ -254,7 +262,7 @@ bool Parser::parseFunction(char const*& input, std::map<std::string, SafeFunctio
 	
 	SafeExpression block = parseBlock(input, args);
 	CHECK(block);
-	functionList[name] = SafeFunction(new Function(name, Simplifier().doAnalysis(block), args.size()));
+	functionList[name] = SafeFunction(new Function(name, _chainer->doAnalysis(block), args.size()));
 
 	return true;
 }
@@ -273,7 +281,7 @@ bool Parser::innerParse(char const*& input) {
 		SafeExpression block = parseBlock(input, std::vector<std::string>());
 		CHECK(block);
 		
-		Function fn = Function("anonymous", Simplifier().doAnalysis(block), 0);
+		Function fn = Function("anonymous", _chainer->doAnalysis(block), 0);
 		
 		if (!resolveAll()) {
 			return false;
