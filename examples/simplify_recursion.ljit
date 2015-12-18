@@ -1,3 +1,4 @@
 fn q(n) -> (if n (q (- n 1)) 5)
 
 (q 15)
+(if 5 true false)

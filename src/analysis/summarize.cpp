@@ -32,6 +32,8 @@ JIT::Expressions::SafeExpression Summarize::doConstantAnalysis(JIT::Expressions:
 		return expression;
 	}
 
+	printf("Simplifying an if which always evaluates to a constant\n");
+
 	if (willEvaluateToTrue(expression->getArguments()[0])) {
 		return expression->getArguments()[1];
 	} else {
