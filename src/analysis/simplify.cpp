@@ -7,6 +7,8 @@ using namespace JIT::Expressions;
 
 SafeExpression Simplifier::doAnalysis(SafeExpression expression) const {
 
+	printf("Simplifying\n");
+
 	std::vector<SafeExpression> simplifiedArguments;
 	
 	for (unsigned int i = 0; i < expression->getArguments().size(); i++) {

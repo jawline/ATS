@@ -19,6 +19,8 @@ bool Summarize::canSummarize(SafeExpression expression) const {
 
 JIT::Expressions::SafeExpression Summarize::doAnalysis(JIT::Expressions::SafeExpression expression) const {
 	
+	printf("Run\n");
+
 	if (canSummarize(expression)) {
 		printf("I might be able to do something here\n");
 	}

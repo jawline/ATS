@@ -19,8 +19,10 @@ using namespace Expressions;
 
 Parser::Parser() {
 	std::vector<SafeAnalysis> anls;
+	
 	anls.push_back(SafeAnalysis(new Simplifier()));
 	anls.push_back(SafeAnalysis(new Summarize()));
+
 	_chainer = SafeAnalysis(new Chainer(anls));
 }
 
@@ -320,7 +322,7 @@ bool Parser::innerParse(char const*& input) {
 			SafeExpression block = parseBlock(input, std::vector<std::string>());
 			CHECK(block);
 
-			Function fn = Function("anonymous", block, 0);
+			Function fn = Function("anonymous", _chainer->doAnalysis(block), 0);
 
 			if (!resolveAll()) {
 				return false;

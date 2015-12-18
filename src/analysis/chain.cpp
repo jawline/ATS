@@ -6,6 +6,8 @@ Chainer::Chainer(std::vector<SafeAnalysis> const& analysis) {
 
 JIT::Expressions::SafeExpression Chainer::doAnalysis(JIT::Expressions::SafeExpression expression) const {
 	
+	printf("Running\n");
+
 	for (unsigned int i = 0; i < _analysis.size(); i++) {
 		expression = _analysis[i]->doAnalysis(expression);
 	}
