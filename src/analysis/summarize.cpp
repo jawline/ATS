@@ -19,10 +19,16 @@ bool Summarize::canSummarize(SafeExpression expression) const {
 
 JIT::Expressions::SafeExpression Summarize::doAnalysis(JIT::Expressions::SafeExpression expression) const {
 	
-	printf("Run\n");
+	std::vector<SafeExpression> simplifiedArguments;
+	
+	for (unsigned int i = 0; i < expression->getArguments().size(); i++) {
+		simplifiedArguments.push_back(doAnalysis(expression->getArguments()[i]));
+	}
+
+	expression->setArguments(simplifiedArguments);
 
 	if (canSummarize(expression)) {
-		printf("I might be able to do something here\n");
+		printf("I may be able to do something here\n");
 	}
 
 	return expression;
