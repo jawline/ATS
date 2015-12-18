@@ -6,7 +6,7 @@ using namespace JIT;
 using namespace JIT::Expressions;
 
 SafeExpression Simplifier::doAnalysis(SafeExpression expression) const {
-	
+
 	std::vector<SafeExpression> simplifiedArguments;
 	
 	for (unsigned int i = 0; i < expression->getArguments().size(); i++) {
@@ -31,8 +31,8 @@ SafeExpression Simplifier::remakeExpression(JIT::Expressions::SafeExpression exp
 	if (isArith(expression) && AnalysisUtils::isAtomic(expression->getArguments()[0]) && AnalysisUtils::isAtomic(expression->getArguments()[1])) {
 		auto type = expression->getExpressionType();
 
-		auto lhsVal = ((Atom*) expression->getArguments()[0].get())->getValueActual();
-		auto rhsVal = ((Atom*) expression->getArguments()[1].get())->getValueActual();
+		auto lhsVal = AnalysisUtils::getValueActual(expression->getArguments()[0]);
+		auto rhsVal = AnalysisUtils::getValueActual(expression->getArguments()[1]);
 
 		int64_t atomicValue;
 

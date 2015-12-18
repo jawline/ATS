@@ -8,6 +8,7 @@
 class Summarize: public Analysis {
 private:
 	bool canSummarize(JIT::Expressions::SafeExpression expression) const;
+	bool willEvaluateToTrue(JIT::Expressions::SafeExpression expression) const;
 
 public:
 	JIT::Expressions::SafeExpression doAnalysis(JIT::Expressions::SafeExpression expression) const;

@@ -5,6 +5,7 @@
 class AnalysisUtils {
 public:
 	static bool isAtomic(JIT::Expressions::SafeExpression const& expr);
+	static int64_t getValueActual(JIT::Expressions::SafeExpression const& expr);
 };
 
 #endif //_ANALYSIS_UTILS_DEF_H_
