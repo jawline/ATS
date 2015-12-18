@@ -22,7 +22,21 @@ bool Summarize::willEvaluateToTrue(JIT::Expressions::SafeExpression expression) 
 }
 
 JIT::Expressions::SafeExpression Summarize::doConstantAnalysis(JIT::Expressions::SafeExpression expression) const {
-	return expression;
+
+	//If the statement is an if which always evaluates to a constant then remove the if statement entirely
+	if (expression->getExpressionType() != ExpressionType::IfType) {
+		return expression;
+	}
+
+	if (!AnalysisUtils::isAtomic(expression->getArguments()[0])) {
+		return expression;
+	}
+
+	if (willEvaluateToTrue(expression->getArguments()[0])) {
+		return expression->getArguments()[1];
+	} else {
+		return expression->getArguments()[2];
+	}
 }
 
 JIT::Expressions::SafeExpression Summarize::doAnalysis(JIT::Expressions::SafeExpression expression) const {
