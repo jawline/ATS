@@ -21,6 +21,10 @@ bool Summarize::willEvaluateToTrue(JIT::Expressions::SafeExpression expression) 
 	return AnalysisUtils::getValueActual(expression) != 0;
 }
 
+JIT::Expressions::SafeExpression Summarize::doConstantAnalysis(JIT::Expressions::SafeExpression expression) const {
+	return expression;
+}
+
 JIT::Expressions::SafeExpression Summarize::doAnalysis(JIT::Expressions::SafeExpression expression) const {
 	
 	std::vector<SafeExpression> simplifiedArguments;
@@ -32,7 +36,7 @@ JIT::Expressions::SafeExpression Summarize::doAnalysis(JIT::Expressions::SafeExp
 	expression->setArguments(simplifiedArguments);
 
 	//First see if it will always evaluate to true or false and always simplify to that path
-
+	expression = doConstantAnalysis(expression);
 
 	if (canSummarize(expression)) {
 		printf("I may be able to do something here\n");

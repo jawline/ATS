@@ -10,6 +10,8 @@ private:
 	bool canSummarize(JIT::Expressions::SafeExpression expression) const;
 	bool willEvaluateToTrue(JIT::Expressions::SafeExpression expression) const;
 
+	JIT::Expressions::SafeExpression doConstantAnalysis(JIT::Expressions::SafeExpression expression) const;
+
 public:
 	JIT::Expressions::SafeExpression doAnalysis(JIT::Expressions::SafeExpression expression) const;
 };
