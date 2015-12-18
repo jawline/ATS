@@ -21,26 +21,6 @@ bool Summarize::willEvaluateToTrue(JIT::Expressions::SafeExpression expression) 
 	return AnalysisUtils::getValueActual(expression) != 0;
 }
 
-JIT::Expressions::SafeExpression Summarize::doConstantAnalysis(JIT::Expressions::SafeExpression expression) const {
-
-	//If the statement is an if which always evaluates to a constant then remove the if statement entirely
-	if (expression->getExpressionType() != ExpressionType::IfType) {
-		return expression;
-	}
-
-	if (!AnalysisUtils::isAtomic(expression->getArguments()[0])) {
-		return expression;
-	}
-
-	printf("Simplifying an if which always evaluates to a constant\n");
-
-	if (willEvaluateToTrue(expression->getArguments()[0])) {
-		return expression->getArguments()[1];
-	} else {
-		return expression->getArguments()[2];
-	}
-}
-
 JIT::Expressions::SafeExpression Summarize::doAnalysis(JIT::Expressions::SafeExpression expression) const {
 	
 	std::vector<SafeExpression> simplifiedArguments;
@@ -50,9 +30,6 @@ JIT::Expressions::SafeExpression Summarize::doAnalysis(JIT::Expressions::SafeExp
 	}
 
 	expression->setArguments(simplifiedArguments);
-
-	//First see if it will always evaluate to true or false and always simplify to that path
-	expression = doConstantAnalysis(expression);
 
 	if (canSummarize(expression)) {
 		printf("I may be able to do something here\n");
