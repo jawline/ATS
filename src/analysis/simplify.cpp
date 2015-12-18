@@ -1,5 +1,6 @@
 #include "simplify.h"
 #include "../jit/expr/atom.h"
+#include "utils.h"
 
 using namespace JIT;
 using namespace JIT::Expressions;
@@ -27,7 +28,7 @@ SafeExpression Simplifier::remakeExpression(JIT::Expressions::SafeExpression exp
 		return expression;
 	}
 
-	if (isArith(expression) && isAtomic(expression->getArguments()[0]) && isAtomic(expression->getArguments()[1])) {
+	if (isArith(expression) && AnalysisUtils::isAtomic(expression->getArguments()[0]) && AnalysisUtils::isAtomic(expression->getArguments()[1])) {
 		auto type = expression->getExpressionType();
 
 		auto lhsVal = ((Atom*) expression->getArguments()[0].get())->getValueActual();
@@ -60,8 +61,4 @@ SafeExpression Simplifier::remakeExpression(JIT::Expressions::SafeExpression exp
 bool Simplifier::isArith(JIT::Expressions::SafeExpression expression) const {
 	auto type = expression->getExpressionType();
 	return type == ExpressionType::Add || type == ExpressionType::Subtract || type == ExpressionType::Multiply || type == ExpressionType::Divide || type == ExpressionType::Mod;
-}
-
-bool Simplifier::isAtomic(SafeExpression expression) const {
-	return expression->getExpressionType() == ExpressionType::AtomType;
 }
