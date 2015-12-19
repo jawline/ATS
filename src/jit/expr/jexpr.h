@@ -64,6 +64,7 @@ namespace JIT {
            * Relates to the address of the method being called
            */
           void* getCallback() const;
+          SafeExpression getCallbackExpression() const { return _callbackExpression; }
           void updateCallback(void* newCallback, SafeExpression callbackExpression);
 
           int getNumArgs() const;

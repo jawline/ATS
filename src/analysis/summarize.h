@@ -8,7 +8,7 @@
 class Summarize: public Analysis {
 private:
 	bool canSummarize(JIT::Expressions::SafeExpression expression) const;
-	bool willEvaluateToTrue(JIT::Expressions::SafeExpression expression) const;
+	bool isJustRecursion(JIT::Expressions::SafeExpression expression) const;
 
 	JIT::Expressions::SafeExpression doConstantAnalysis(JIT::Expressions::SafeExpression expression) const;
 
