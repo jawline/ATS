@@ -6,6 +6,7 @@
 #include "analysis/ifconstant.h"
 #include "analysis/summarize.h"
 #include "analysis/simplify.h"
+#include "analysis/constantfunctionsubstitution.h"
 
 #include "jit/expr/arith.h"
 #include "jit/expr/atom.h"
@@ -22,6 +23,7 @@ Parser::Parser() {
 	std::vector<SafeAnalysis> anls;
 	
 	anls.push_back(SafeAnalysis(new Simplifier()));
+	anls.push_back(SafeAnalysis(new ConstantFunctionSubstitution()));
 	anls.push_back(SafeAnalysis(new IfConstant()));
 	anls.push_back(SafeAnalysis(new Summarize()));
 
@@ -61,6 +63,11 @@ bool Parser::resolveAll() {
 			i--;
 		}
 	}
+
+	for (auto it = _functions.begin(); it != _functions.end(); it++) {
+		it->second->rewriteCallbacks();
+	}
+
 	return true;
 }
 
@@ -267,8 +274,16 @@ bool Parser::parseFunction(char const*& input, std::map<std::string, SafeFunctio
 	}
 	
 	SafeExpression block = parseBlock(input, args);
+	
 	CHECK(block);
-	functionList[name] = SafeFunction(new Function(name, _chainer->doAnalysis(block), args.size()));
+
+	functionList[name] = SafeFunction(new Function(name, block, args.size()));
+
+	if (!resolveAll()) {
+		return false;
+	}
+
+	functionList[name]->simplify(_chainer);
 
 	return true;
 }
@@ -287,11 +302,13 @@ bool Parser::innerParse(char const*& input) {
 		SafeExpression block = parseBlock(input, std::vector<std::string>());
 		CHECK(block);
 		
-		Function fn = Function("anonymous", _chainer->doAnalysis(block), 0);
+		Function fn = Function("anonymous", block, 0);
 		
 		if (!resolveAll()) {
 			return false;
 		}
+
+		fn.simplify(_chainer);
 
 		fn.rewriteCallbacks();
 
@@ -358,14 +375,6 @@ bool Parser::innerParse(char const*& input) {
 
 		if (!parseFunction(input, _functions)) {
 			return false;
-		}
-
-		if (!resolveAll()) {
-			return false;
-		}
-
-		for (auto it = _functions.begin(); it != _functions.end(); it++) {
-			it->second->rewriteCallbacks();
 		}
 
 	} else {

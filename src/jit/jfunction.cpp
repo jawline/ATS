@@ -67,6 +67,10 @@ ExpressionCheckResult Function::checkResultType(std::vector<Type> const& storedT
   return _stmt->checkResultType(storedTypes, potentialMethods);
 }
 
+void Function::simplify(SafeAnalysis analysis) {
+  _stmt = analysis->doAnalysis(_stmt);
+}
+
 int64_t Function::run() {
   return getFnPtr()();
 }

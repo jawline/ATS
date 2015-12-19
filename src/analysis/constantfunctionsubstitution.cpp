@@ -1,10 +1,12 @@
 #include "constantfunctionsubstitution.h"
 #include "utils.h"
 
+using namespace JIT::Expressions;
+
 JIT::Expressions::SafeExpression ConstantFunctionSubstitution::doAnalysis(JIT::Expressions::SafeExpression expression) const {
 
 	if (expression->getExpressionType() == FunctionCall && AnalysisUtils::isAtomic(expression->getCallbackExpression())) {
-		printf("Replacing a function by a replacement\n");
+		printf("Replacing a function by an atomic\n");
 		return expression->getCallbackExpression();
 	} else {
 		std::vector<SafeExpression> simplifiedArguments;
