@@ -279,6 +279,7 @@ bool Parser::parseFunction(char const*& input, std::map<std::string, SafeFunctio
 
 	functionList[name] = SafeFunction(new Function(name, block, args.size()));
 
+	//TODO: getFn generating the JIT'ed function is bad as now recursive functions will not get rewritten
 	if (!resolveAll()) {
 		return false;
 	}
