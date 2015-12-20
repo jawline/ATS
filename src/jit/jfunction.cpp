@@ -6,57 +6,21 @@ using namespace Assembler;
 using namespace Expressions;
 
 Function::Function(std::string const& name, SafeExpression const& stmt, size_t numArgs) {
-  _storedFn = nullptr;
-  _stmt = stmt;
+  _stmt = SafeCompiledStatement(new CompiledStatement(stmt));
   _numArgs = numArgs;
-  _stmt->setMarker(name);
 }
 
-Function::~Function() {
-  if (_storedFn) {
-  	Helper::freeFunctionPointer(_storedFn, _fnSize);
-  }
-}
-
-void Function::prepare(SafeExpression const& stmt) {
-  ByteBuffer buffer;
-
-  Helper::insertPrologue(buffer);
-
-  //Push all the args so they sit left to right from ebp
-  Helper::functionEntryPushArgs(_numArgs, buffer);
-  stmt->write(buffer, _unresolvedCallList);
-  Helper::popResult(buffer);
-  Helper::functionExitDiscardArgs(_numArgs, buffer);
-  Helper::insertEpilogue(buffer);
-  
-  _storedFn = Helper::prepareFunctionPointer(buffer);
-  _fnSize = buffer.current();
-}
+Function::~Function() {}
 
 size_t Function::getNumArgs() const {
 	return _numArgs;
 }
 
 SafeExpression Function::expression() const {
-  return _stmt;
+  return _stmt->getExpression();
 }
 
-void Function::rewriteCallbacks() {
-
-	if (!_storedFn) {
-		return;
-	}
-
-	for (unsigned int i = 0; i < _unresolvedCallList.size(); i++) {
-		if (_unresolvedCallList[i].first->getCallback()) {
-			Helper::updateAddress(_storedFn, _unresolvedCallList[i].second, _unresolvedCallList[i].first->getCallback());
-			_unresolvedCallList.erase(_unresolvedCallList.begin() + i);
-			//Drop back by 1 as the next item will now hold this items index
-			i--;
-		}
-	}
-}
+void Function::rewriteCallbacks() {}
 
 ExpressionCheckResult Function::checkResultType(std::vector<Type> const& storedTypes, std::vector<Expressions::MethodCall>& potentialMethods) {
   
@@ -64,11 +28,11 @@ ExpressionCheckResult Function::checkResultType(std::vector<Type> const& storedT
     return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Boolean)};
   }
 
-  return _stmt->checkResultType(storedTypes, potentialMethods);
+  return _stmt->getExpression()->checkResultType(storedTypes, potentialMethods);
 }
 
 void Function::simplify(SafeAnalysis analysis) {
-  _stmt = analysis->doAnalysis(_stmt);
+  _stmt->setExpression(analysis->doAnalysis(_stmt->getExpression()));
 }
 
 int64_t Function::run() {
@@ -76,8 +40,5 @@ int64_t Function::run() {
 }
 
 JFPTR Function::getFnPtr() {
-	if (!_storedFn) {
-		prepare(_stmt);
-	}
-	return _storedFn;
+	return _stmt->getCompiled(_numArgs);
 }

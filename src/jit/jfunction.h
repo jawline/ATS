@@ -8,12 +8,8 @@
 namespace JIT {
 	class Function {
 	private:
-		void prepare(Expressions::SafeExpression const& stmt);
-		JFPTR _storedFn;
-		std::vector<std::pair<Expressions::Expression*, size_t>> _unresolvedCallList;
-		size_t _fnSize;
+		Expressions::SafeCompiledStatement _stmt;
 		size_t _numArgs;
-		Expressions::SafeExpression _stmt;
 
 	public:
 		Function(std::string const& name, Expressions::SafeExpression const& stmt, size_t numArgs);
