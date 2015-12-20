@@ -19,11 +19,11 @@ void FCall::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expressio
 
       //TODO: I NEED ERROR PROPAGATION THROUGH HERE
       //TODO: OR THE TYPE CHECKER NEEDS TO VERIFY ALL CALLBACKS ARE RESOLVED
-      void* callbackLocation = (void*) _callbackEntry->getCompiled();
+      void* callbackLocation = _callbackEntry.get() ? (void*) _callbackEntry->getCompiled() : (void*) Callbacks::unresolved;
 
-      size_t addressStart = Helper::callFunction(callbackLocation ? callbackLocation : ((void*)Callbacks::unresolved), buffer);
+      size_t addressStart = Helper::callFunction(callbackLocation, buffer);
 
-      if (callbackLocation == nullptr) {
+      if (!_callbackEntry.get()) {
         printf("ERROR: Unresolved callback\n");
         unresolvedList.push_back(std::pair<Expression*, size_t>(this, addressStart));
       }
