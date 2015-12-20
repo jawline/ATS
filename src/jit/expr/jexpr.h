@@ -2,6 +2,7 @@
 #define _jexpr_DEF_H_
 #include <memory>
 #include <vector>
+#include "../jhelper.h"
 #include "../jtype.h"
 #include "../../utils/bytebuffer.h"
 
@@ -85,7 +86,24 @@ namespace JIT {
     };
 
     class CompiledStatement {
-      SafeExpression expr;
+      private:
+        SafeExpression _expr;
+
+        std::vector<std::pair<Expression*, size_t>> _unresolvedCallList;
+
+        JFPTR _cachedCallback;
+        size_t _fnSize;
+
+        void prepare(size_t numArgs);
+
+      public:
+          CompiledStatement(SafeExpression expression);
+          virtual ~CompiledStatement();
+
+          void setExpression(SafeExpression const& expression);
+          SafeExpression getExpression() const;
+
+          JFPTR getCompiled(size_t numArgs);
     };
   }
 }

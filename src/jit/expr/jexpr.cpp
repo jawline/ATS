@@ -3,6 +3,7 @@
 
 using namespace JIT;
 using namespace Expressions;
+using namespace Assembler;
 
 //TODO: callbackExpression can cause a leak as the ref counter will never deref
 //TODO: entryRef will do the same
@@ -53,4 +54,48 @@ void Expression::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expr
 
 ExpressionCheckResult Expression::checkResultType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) {
   return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Unknown)};
+}
+
+CompiledStatement::CompiledStatement(SafeExpression expr) {
+  _expr = expr;
+  _cachedCallback = nullptr;
+}
+
+CompiledStatement::~CompiledStatement() {
+  if (_cachedCallback) {
+    Helper::freeFunctionPointer(_cachedCallback, _fnSize);
+  }
+}
+
+void CompiledStatement::prepare(size_t numArgs) {
+  ByteBuffer buffer;
+
+  Helper::insertPrologue(buffer);
+
+  //Push all the args so they sit left to right from ebp
+  Helper::functionEntryPushArgs(numArgs, buffer);
+  _expr->write(buffer, _unresolvedCallList);
+  Helper::popResult(buffer);
+  Helper::functionExitDiscardArgs(numArgs, buffer);
+  Helper::insertEpilogue(buffer);
+  
+  _cachedCallback = Helper::prepareFunctionPointer(buffer);
+  _fnSize = buffer.current();
+}
+
+void CompiledStatement::setExpression(SafeExpression const& expr) {
+  _expr = expr;
+}
+
+SafeExpression CompiledStatement::getExpression() const {
+  return _expr;
+}
+
+JFPTR CompiledStatement::getCompiled(size_t numArgs) {
+  
+  if (!_cachedCallback) {
+    prepare(numArgs);
+  }
+
+  return _cachedCallback;
 }
