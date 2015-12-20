@@ -37,6 +37,9 @@ namespace JIT {
       std::vector<Type> calledWith;
     };
 
+    class CompiledStatement;
+    typedef std::shared_ptr<class CompiledStatement> SafeCompiledStatement;
+
     class Expression {
         protected:
           ExpressionType _type;
@@ -79,6 +82,10 @@ namespace JIT {
            */
           virtual BaseCheckResult getBaseType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) { return BaseCheckResult{false, Unknown}; }
           virtual ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions);
+    };
+
+    class CompiledStatement {
+      SafeExpression expr;
     };
   }
 }
