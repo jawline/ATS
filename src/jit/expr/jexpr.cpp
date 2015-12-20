@@ -54,6 +54,10 @@ SafeExpression Expression::getCallbackExpression() const {
   return _callbackEntry->getExpression();
 }
 
+SafeCompiledStatement Expression::getCallbackCompiledStatement() const {
+  return _callbackEntry;
+}
+
 CompiledStatement::CompiledStatement(SafeExpression expr, size_t numArgs) {
   _expr = expr;
   _cachedCallback = nullptr;
@@ -88,6 +92,23 @@ void CompiledStatement::setExpression(SafeExpression const& expr) {
 
 SafeExpression CompiledStatement::getExpression() const {
   return _expr;
+}
+
+void CompiledStatement::rewriteCallbacks() {
+
+  if (!_cachedCallback) {
+    return;
+  }
+
+  printf("TODO: Rewriting callbacks still doesn't work\n");/*
+  for (unsigned int i = 0; i < _unresolvedCallList.size(); i++) {
+    if (_unresolvedCallList[i].first->getCallbackExpression().get() {
+      Helper::updateAddress(_storedFn, _unresolvedCallList[i].second, _unresolvedCallList[i].first->getCallback());
+      _unresolvedCallList.erase(_unresolvedCallList.begin() + i);
+      //Drop back by 1 as the next item will now hold this items index
+      i--;
+    }
+  }*/
 }
 
 JFPTR CompiledStatement::getCompiled() {

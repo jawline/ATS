@@ -13,14 +13,16 @@ Function::Function(std::string const& name, SafeExpression const& stmt, size_t n
 Function::~Function() {}
 
 size_t Function::getNumArgs() const {
-	return _numArgs;
+  return _numArgs;
 }
 
 SafeExpression Function::expression() const {
   return _stmt->getExpression();
 }
 
-void Function::rewriteCallbacks() {}
+void Function::rewriteCallbacks() {
+  _stmt->rewriteCallbacks();
+}
 
 Expressions::SafeCompiledStatement Function::getCompiledStatement() const {
   return _stmt;
@@ -44,5 +46,5 @@ int64_t Function::run() {
 }
 
 JFPTR Function::getFnPtr() {
-	return _stmt->getCompiled();
+  return _stmt->getCompiled();
 }

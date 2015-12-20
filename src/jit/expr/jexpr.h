@@ -56,6 +56,7 @@ namespace JIT {
 
         public:
           Expression(ExpressionType type, std::vector<SafeExpression> const& args);
+
           void setMarker(std::string const& marker);
           std::string getMarker() const;
 
@@ -67,6 +68,7 @@ namespace JIT {
            * Relates to the address of the method being called
            */
           void setCallbackEntry(SafeCompiledStatement const& stmt);
+          SafeCompiledStatement getCallbackCompiledStatement() const;
           SafeExpression getCallbackExpression() const;
 
           int getNumArgs() const;
@@ -103,6 +105,7 @@ namespace JIT {
           SafeExpression getExpression() const;
 
           JFPTR getCompiled();
+          void rewriteCallbacks();
     };
   }
 }
