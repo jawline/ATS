@@ -56,7 +56,7 @@ bool Parser::resolveAll() {
 				return false;
 			}
 			
-			_unresolved[i].second->updateCallback((void*)_functions[_unresolved[i].first]->getFnPtr(), _functions[_unresolved[i].first]->expression());
+			_unresolved[i].second->setCallbackEntry(_functions[_unresolved[i].first]->getCompiledStatement());
 		
 			//Remove updated item and offset i to compensate
 			_unresolved.erase(_unresolved.begin() + i);

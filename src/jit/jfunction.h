@@ -19,6 +19,7 @@ namespace JIT {
 		int64_t run();
 		JFPTR getFnPtr();
 
+		Expressions::SafeCompiledStatement getCompiledStatement() const;
 		Expressions::SafeExpression expression() const;
 		Expressions::ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes, std::vector<Expressions::MethodCall>& potentialMethods);
 

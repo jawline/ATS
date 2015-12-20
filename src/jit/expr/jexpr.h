@@ -45,8 +45,7 @@ namespace JIT {
         protected:
           ExpressionType _type;
 
-          void* _callbackLocation;
-          SafeExpression _callbackExpression;
+          SafeCompiledStatement _callbackEntry;
 
           /**
            * Marker used to identify the statement when printing (often "")
@@ -67,9 +66,8 @@ namespace JIT {
           /**
            * Relates to the address of the method being called
            */
-          void* getCallback() const;
-          SafeExpression getCallbackExpression() const { return _callbackExpression; }
-          void updateCallback(void* newCallback, SafeExpression callbackExpression);
+          void setCallbackEntry(SafeCompiledStatement const& stmt);
+          SafeExpression getCallbackExpression() const;
 
           int getNumArgs() const;
 
@@ -93,17 +91,18 @@ namespace JIT {
 
         JFPTR _cachedCallback;
         size_t _fnSize;
+        size_t _numArgs;
 
         void prepare(size_t numArgs);
 
       public:
-          CompiledStatement(SafeExpression expression);
+          CompiledStatement(SafeExpression expression, size_t nArgs);
           virtual ~CompiledStatement();
 
           void setExpression(SafeExpression const& expression);
           SafeExpression getExpression() const;
 
-          JFPTR getCompiled(size_t numArgs);
+          JFPTR getCompiled();
     };
   }
 }

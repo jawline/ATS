@@ -17,16 +17,21 @@ void FCall::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expressio
         Helper::setArgumentStackTop(i - 1, buffer);
       }
 
-      size_t addressStart = Helper::callFunction(_callbackLocation ? _callbackLocation : ((void*)Callbacks::unresolved), buffer);
+      //TODO: I NEED ERROR PROPAGATION THROUGH HERE
+      //TODO: OR THE TYPE CHECKER NEEDS TO VERIFY ALL CALLBACKS ARE RESOLVED
+      void* callbackLocation = (void*) _callbackEntry->getCompiled();
 
-      if (_callbackLocation == nullptr) {
+      size_t addressStart = Helper::callFunction(callbackLocation ? callbackLocation : ((void*)Callbacks::unresolved), buffer);
+
+      if (callbackLocation == nullptr) {
+        printf("ERROR: Unresolved callback\n");
         unresolvedList.push_back(std::pair<Expression*, size_t>(this, addressStart));
       }
 }
 
 bool FCall::isRecursion(std::vector<Type> const& storedTypes, std::vector<Type> const& argTypes, std::vector<MethodCall> const& potentiallyCalledFunctions) const {
   for (unsigned int i = 0; i < potentiallyCalledFunctions.size(); i++) {
-    if (potentiallyCalledFunctions[i].stmt.get() == _callbackExpression.get()) {
+    if (potentiallyCalledFunctions[i].stmt.get() == getCallbackExpression().get()) {
 
         if (argTypes.size() == potentiallyCalledFunctions[i].calledWith.size()) {
 
@@ -69,13 +74,13 @@ BaseCheckResult FCall::getBaseType(std::vector<Type> const& storedTypes, std::ve
         return BaseCheckResult{true, Unknown};
       }
 
-      potentiallyCalledFunctions.push_back(MethodCall{_callbackExpression, argTypes});
-      return _callbackExpression->getBaseType(storedTypes, potentiallyCalledFunctions);
+      potentiallyCalledFunctions.push_back(MethodCall{getCallbackExpression(), argTypes});
+      return getCallbackExpression()->getBaseType(storedTypes, potentiallyCalledFunctions);
 }
 
 ExpressionCheckResult FCall::checkResultType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) {
 
-      if (_callbackExpression == nullptr) {
+      if (getCallbackExpression() == nullptr) {
         return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Unknown)};  
       }
 
@@ -94,7 +99,7 @@ ExpressionCheckResult FCall::checkResultType(std::vector<Type> const& storedType
       //Is this a recursion?
       if (isRecursion(storedTypes, argTypes, potentiallyCalledFunctions)) {
         auto calledFunctionsCopy = potentiallyCalledFunctions;
-        auto baseTypeCheck = _callbackExpression->getBaseType(argTypes, calledFunctionsCopy);
+        auto baseTypeCheck = getCallbackExpression()->getBaseType(argTypes, calledFunctionsCopy);
         
         if (baseTypeCheck.recursion) {
           printf("TODO: Recursion error handling\n");
@@ -103,6 +108,6 @@ ExpressionCheckResult FCall::checkResultType(std::vector<Type> const& storedType
         return ExpressionCheckResult{ExpressionCheckResult::InfinateRecursion, baseTypeCheck.type};
       }
 
-      potentiallyCalledFunctions.push_back(MethodCall{_callbackExpression, argTypes});
-      return _callbackExpression->checkResultType(argTypes, potentiallyCalledFunctions);
+      potentiallyCalledFunctions.push_back(MethodCall{getCallbackExpression(), argTypes});
+      return getCallbackExpression()->checkResultType(argTypes, potentiallyCalledFunctions);
 }

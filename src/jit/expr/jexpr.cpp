@@ -11,21 +11,15 @@ using namespace Assembler;
 Expression::Expression(ExpressionType type, std::vector<SafeExpression> const& args) {
   _type = type;
   _args = args;
-  _callbackLocation = nullptr;
-  _callbackExpression = nullptr;
+  _callbackEntry = nullptr;
 }
 
-void Expression::updateCallback(void* callback, SafeExpression callbackExpression) {
-  _callbackLocation = callback;
-  _callbackExpression = callbackExpression;
+void Expression::setCallbackEntry(SafeCompiledStatement const& stmt) {
+  _callbackEntry = stmt;
 }
 
 ExpressionType Expression::getExpressionType() const {
   return _type;
-}
-
-void* Expression::getCallback() const {
-  return _callbackLocation;
 }
 
 std::vector<SafeExpression> Expression::getArguments() const {
@@ -56,9 +50,14 @@ ExpressionCheckResult Expression::checkResultType(std::vector<Type> const& store
   return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Unknown)};
 }
 
-CompiledStatement::CompiledStatement(SafeExpression expr) {
+SafeExpression Expression::getCallbackExpression() const {
+  return _callbackEntry->getExpression();
+}
+
+CompiledStatement::CompiledStatement(SafeExpression expr, size_t numArgs) {
   _expr = expr;
   _cachedCallback = nullptr;
+  _numArgs = numArgs;
 }
 
 CompiledStatement::~CompiledStatement() {
@@ -91,10 +90,10 @@ SafeExpression CompiledStatement::getExpression() const {
   return _expr;
 }
 
-JFPTR CompiledStatement::getCompiled(size_t numArgs) {
+JFPTR CompiledStatement::getCompiled() {
   
   if (!_cachedCallback) {
-    prepare(numArgs);
+    prepare(_numArgs);
   }
 
   return _cachedCallback;
