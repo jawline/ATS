@@ -38,7 +38,7 @@ SafeExpression Parser::parseAtom(char const*& input) {
 	auto token = _tokeniser.nextToken(input);
 
 	if (token.id() == NUM) {
-		return SafeExpression(new Atom((int64_t)token.asInt()));
+		return SafeExpression(new Atom((int64_t) token.asInt()));
 	} else if (token.id() == BOOL) {
 		return SafeExpression(new Atom(token.asBool()));
 	} else {
