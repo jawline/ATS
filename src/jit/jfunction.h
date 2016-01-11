@@ -24,7 +24,6 @@ namespace JIT {
 		Expressions::ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes, std::vector<Expressions::MethodCall>& potentialMethods);
 
 		size_t getNumArgs() const;
-
 		void simplify(SafeAnalysis analysis);
 	};
 	
