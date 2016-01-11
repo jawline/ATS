@@ -284,8 +284,6 @@ bool Parser::parseFunction(char const*& input, std::map<std::string, SafeFunctio
 		return false;
 	}
 
-	functionList[name]->simplify(_chainer);
-
 	return true;
 }
 
@@ -310,7 +308,6 @@ bool Parser::innerParse(char const*& input) {
 		}
 
 		fn.simplify(_chainer);
-
 		fn.rewriteCallbacks();
 
 		std::vector<Type> argTypes;
@@ -342,12 +339,13 @@ bool Parser::innerParse(char const*& input) {
 			SafeExpression block = parseBlock(input, std::vector<std::string>());
 			CHECK(block);
 
-			Function fn = Function("anonymous", _chainer->doAnalysis(block), 0);
+			Function fn = Function("anonymous", block, 0);
 
 			if (!resolveAll()) {
 				return false;
 			}
 
+			fn.simplify(_chainer);
 			fn.rewriteCallbacks();
 
 			std::vector<Type> argTypes;

@@ -4,6 +4,7 @@
 #include "parser.h"
 
 int writeToFile(Assembler::ByteBuffer const& buffer, char const* filename) {
+	
 	FILE* fout = fopen(filename, "wb");
 	
 	if (!fout) {
@@ -20,6 +21,7 @@ int writeToFile(Assembler::ByteBuffer const& buffer, char const* filename) {
 	}
 
 	fclose(fout);
+	
 	return 0;
 }
 
