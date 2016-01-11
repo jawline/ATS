@@ -30,6 +30,7 @@ JIT::Expressions::SafeExpression Summarize::doAnalysis(JIT::Expressions::SafeExp
 	expression->setArguments(simplifiedArguments);
 
 	if (canSummarize(expression)) {
+		//TODO: Fix summarizer
 		printf("I may be able to do something here\n");
 	}
 
