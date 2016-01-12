@@ -5,14 +5,14 @@ using namespace JIT::Expressions;
 
 If::If(std::vector<SafeExpression> const& args) : Expression(IfType, args) {}
 
-void If::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList) {
+void If::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList, std::vector<SafeCompiledStatement> const& currentCalls) {
 
       //Execute condition
-      _args[0]->write(buffer, unresolvedList);
+      _args[0]->write(buffer, unresolvedList, currentCalls);
       
       //Write a jump instruction with BS location
       size_t elseAddr = Helper::jumpRelativeTopEqualZero(buffer, 0xDEAD);
-      _args[1]->write(buffer, unresolvedList);
+      _args[1]->write(buffer, unresolvedList, currentCalls);
       
       //Write a jump location to avoid the else
       size_t exitAddr = Helper::jumpRelative(buffer, 0xDEAD);
@@ -21,7 +21,7 @@ void If::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*,
       
       //If the if comes with an else then write it otherwise write 0
       if (_args.size() == 3) {
-        _args[2]->write(buffer, unresolvedList);
+        _args[2]->write(buffer, unresolvedList, currentCalls);
       } else {
         printf("ERROR EXPECTED 3 ARGS\n");
       }

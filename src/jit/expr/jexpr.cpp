@@ -42,7 +42,7 @@ std::string Expression::getMarker() const {
   return _marker;
 }
 
-void Expression::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList) {
+void Expression::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList, std::vector<SafeCompiledStatement> const& currentCalls) {
   printf("JIT shouldnt be called on base type\n");
 }
 
@@ -70,14 +70,14 @@ CompiledStatement::~CompiledStatement() {
   }
 }
 
-void CompiledStatement::prepare(size_t numArgs) {
+void CompiledStatement::prepare(size_t numArgs, std::vector<SafeCompiledStatement> const& currentCalls) {
   ByteBuffer buffer;
 
   Helper::insertPrologue(buffer);
 
   //Push all the args so they sit left to right from ebp
   Helper::functionEntryPushArgs(numArgs, buffer);
-  _expr->write(buffer, _unresolvedCallList);
+  _expr->write(buffer, _unresolvedCallList, currentCalls);
   Helper::popResult(buffer);
   Helper::functionExitDiscardArgs(numArgs, buffer);
   Helper::insertEpilogue(buffer);
@@ -111,10 +111,10 @@ void CompiledStatement::rewriteCallbacks() {
   }*/
 }
 
-JFPTR CompiledStatement::getCompiled() {
+JFPTR CompiledStatement::getCompiled(std::vector<SafeCompiledStatement> const& currentCalls) {
   
   if (!_cachedCallback) {
-    prepare(_numArgs);
+    prepare(_numArgs, currentCalls);
   }
 
   return _cachedCallback;

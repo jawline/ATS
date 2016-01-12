@@ -76,7 +76,7 @@ namespace JIT {
           /**
            * Does the actual JITTIng
            */
-          virtual void write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList);
+          virtual void write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList, std::vector<SafeCompiledStatement> const& currentCalls);
 
           /**
            * Type checker
@@ -95,7 +95,7 @@ namespace JIT {
         size_t _fnSize;
         size_t _numArgs;
 
-        void prepare(size_t numArgs);
+        void prepare(size_t numArgs, std::vector<SafeCompiledStatement> const& currentCalls);
 
       public:
           CompiledStatement(SafeExpression expression, size_t nArgs);
@@ -104,7 +104,7 @@ namespace JIT {
           void setExpression(SafeExpression const& expression);
           SafeExpression getExpression() const;
 
-          JFPTR getCompiled();
+          JFPTR getCompiled(std::vector<SafeCompiledStatement> const& currentCalls);
           void rewriteCallbacks();
     };
   }

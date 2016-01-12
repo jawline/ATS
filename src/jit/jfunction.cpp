@@ -46,5 +46,7 @@ int64_t Function::run() {
 }
 
 JFPTR Function::getFnPtr() {
-  return _stmt->getCompiled();
+  auto callList = std::vector<SafeCompiledStatement>();
+  callList.push_back(_stmt);
+  return _stmt->getCompiled(callList);
 }

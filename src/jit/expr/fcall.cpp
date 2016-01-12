@@ -6,24 +6,39 @@ using namespace JIT::Expressions;
 
 FCall::FCall(std::vector<SafeExpression> const& args) : Expression(FunctionCall, args) {}
 
-void FCall::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList) {
+void FCall::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList, std::vector<SafeCompiledStatement> const& currentCalls) {
+      
       //TODO: SCARY! This will break with over 6 args, work out a nice way to do this
       //printf("TODO: FunctionCall arg set is broken with over 6 args\n");
       for (unsigned int i = 0; i < _args.size(); i++) {
-        _args[i]->write(buffer, unresolvedList);
+        _args[i]->write(buffer, unresolvedList, currentCalls);
       }
 
       for (int i = _args.size(); i > 0; i--) {
         Helper::setArgumentStackTop(i - 1, buffer);
       }
 
+
       //TODO: I NEED ERROR PROPAGATION THROUGH HERE
       //TODO: OR THE TYPE CHECKER NEEDS TO VERIFY ALL CALLBACKS ARE RESOLVED
-      void* callbackLocation = _callbackEntry.get() ? (void*) _callbackEntry->getCompiled() : (void*) Callbacks::unresolved;
+      void* callbackLocation = (void*) Callbacks::unresolved;
+      bool recursion = false;
+
+      for (unsigned int i = 0; i < currentCalls.size(); i++) {
+        if (currentCalls[i].get() == _callbackEntry.get()) {
+          recursion = true;
+        }
+      }
+
+      if (!recursion && _callbackEntry.get()) {
+        auto newCalls = currentCalls;
+        newCalls.push_back(_callbackEntry);
+        callbackLocation = (void*) _callbackEntry->getCompiled(newCalls);
+      }
 
       size_t addressStart = Helper::callFunction(callbackLocation, buffer);
 
-      if (!_callbackEntry.get()) {
+      if (recursion || !_callbackEntry.get()) {
         printf("ERROR: Unresolved callback\n");
         unresolvedList.push_back(std::pair<Expression*, size_t>(this, addressStart));
       }

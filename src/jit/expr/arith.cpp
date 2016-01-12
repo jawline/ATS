@@ -5,31 +5,31 @@ using namespace JIT::Expressions;
 
 Arithmetic::Arithmetic(ExpressionType type, std::vector<SafeExpression> const& args) : Expression(type, args) {}
 
-void Arithmetic::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList) {
+void Arithmetic::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList, std::vector<SafeCompiledStatement> const& currentCalls) {
 	switch (_type) {
 		case Add:
-	      _args[0]->write(buffer, unresolvedList);
-	      _args[1]->write(buffer, unresolvedList);
+	      _args[0]->write(buffer, unresolvedList, currentCalls);
+	      _args[1]->write(buffer, unresolvedList, currentCalls);
 	      Helper::addTopTwoStack(buffer);
 	      break;
 	    case Subtract:
-	      _args[0]->write(buffer, unresolvedList);
-	      _args[1]->write(buffer, unresolvedList);
+	      _args[0]->write(buffer, unresolvedList, currentCalls);
+	      _args[1]->write(buffer, unresolvedList, currentCalls);
 	      Helper::subTopTwoStack(buffer);
 	      break;
 	    case Multiply:
-	      _args[0]->write(buffer, unresolvedList);
-	      _args[1]->write(buffer, unresolvedList);
+	      _args[0]->write(buffer, unresolvedList, currentCalls);
+	      _args[1]->write(buffer, unresolvedList, currentCalls);
 	      Helper::mulTopTwoStack(buffer);
 	      break;
 	    case Mod:
-	      _args[0]->write(buffer, unresolvedList);
-	      _args[1]->write(buffer, unresolvedList);
+	      _args[0]->write(buffer, unresolvedList, currentCalls);
+	      _args[1]->write(buffer, unresolvedList, currentCalls);
 	      Helper::modTopTwoStack(buffer);
 	      break;	    	
 	    case Divide:
-	      _args[0]->write(buffer, unresolvedList);
-	      _args[1]->write(buffer, unresolvedList);
+	      _args[0]->write(buffer, unresolvedList, currentCalls);
+	      _args[1]->write(buffer, unresolvedList, currentCalls);
 	      Helper::divTopTwoStack(buffer);
 	      break;
 	};
