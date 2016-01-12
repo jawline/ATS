@@ -6,7 +6,7 @@ using namespace JIT::Expressions;
 
 FCall::FCall(std::vector<SafeExpression> const& args) : Expression(FunctionCall, args) {}
 
-void FCall::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList, std::vector<SafeCompiledStatement> const& currentCalls) {
+void FCall::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<SafeCompiledStatement, size_t>>& unresolvedList, std::vector<SafeCompiledStatement> const& currentCalls) {
       
       //TODO: SCARY! This will break with over 6 args, work out a nice way to do this
       //printf("TODO: FunctionCall arg set is broken with over 6 args\n");
@@ -40,7 +40,7 @@ void FCall::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expressio
 
       if (recursion || !_callbackEntry.get()) {
         printf("ERROR: Unresolved callback\n");
-        unresolvedList.push_back(std::pair<Expression*, size_t>(this, addressStart));
+        unresolvedList.push_back(std::pair<SafeCompiledStatement, size_t>(_callbackEntry, addressStart));
       }
 }
 

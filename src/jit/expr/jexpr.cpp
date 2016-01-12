@@ -42,7 +42,7 @@ std::string Expression::getMarker() const {
   return _marker;
 }
 
-void Expression::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList, std::vector<SafeCompiledStatement> const& currentCalls) {
+void Expression::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<SafeCompiledStatement, size_t>>& unresolvedList, std::vector<SafeCompiledStatement> const& currentCalls) {
   printf("JIT shouldnt be called on base type\n");
 }
 
@@ -100,15 +100,22 @@ void CompiledStatement::rewriteCallbacks() {
     return;
   }
 
-  printf("TODO: Rewriting callbacks still doesn't work\n");/*
+  printf("TODO: Rewriting callbacks still doesn't work\n");
   for (unsigned int i = 0; i < _unresolvedCallList.size(); i++) {
-    if (_unresolvedCallList[i].first->getCallbackExpression().get() {
-      Helper::updateAddress(_storedFn, _unresolvedCallList[i].second, _unresolvedCallList[i].first->getCallback());
+    
+    auto basicList = std::vector<SafeCompiledStatement>();
+    basicList.push_back(_unresolvedCallList[i].first);
+
+    auto foundCallback = _unresolvedCallList[i].first->getCompiled(basicList);
+
+    if (foundCallback) {
+      printf("Rewrote a callback\n");
+      Helper::updateAddress(_cachedCallback, _unresolvedCallList[i].second, (void*) foundCallback);
       _unresolvedCallList.erase(_unresolvedCallList.begin() + i);
       //Drop back by 1 as the next item will now hold this items index
       i--;
     }
-  }*/
+  }
 }
 
 JFPTR CompiledStatement::getCompiled(std::vector<SafeCompiledStatement> const& currentCalls) {

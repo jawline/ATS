@@ -7,7 +7,7 @@ SVal::SVal(unsigned int index) : Expression(Stored, std::vector<SafeExpression>(
   _index = index;
 }
 
-void SVal::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList, std::vector<SafeCompiledStatement> const& currentCalls) {
+void SVal::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<SafeCompiledStatement, size_t>>& unresolvedList, std::vector<SafeCompiledStatement> const& currentCalls) {
 	Helper::pushArgumentTop(_index, buffer);
 }
 

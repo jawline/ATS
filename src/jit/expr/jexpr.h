@@ -76,7 +76,7 @@ namespace JIT {
           /**
            * Does the actual JITTIng
            */
-          virtual void write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Expression*, size_t>>& unresolvedList, std::vector<SafeCompiledStatement> const& currentCalls);
+          virtual void write(Assembler::ByteBuffer& buffer, std::vector<std::pair<SafeCompiledStatement, size_t>>& unresolvedList, std::vector<SafeCompiledStatement> const& currentCalls);
 
           /**
            * Type checker
@@ -89,7 +89,7 @@ namespace JIT {
       private:
         SafeExpression _expr;
 
-        std::vector<std::pair<Expression*, size_t>> _unresolvedCallList;
+        std::vector<std::pair<SafeCompiledStatement, size_t>> _unresolvedCallList;
 
         JFPTR _cachedCallback;
         size_t _fnSize;
@@ -105,6 +105,8 @@ namespace JIT {
           SafeExpression getExpression() const;
 
           JFPTR getCompiled(std::vector<SafeCompiledStatement> const& currentCalls);
+
+          //This method links one call into another then mutual recursion means that memory locations are not both known on write
           void rewriteCallbacks();
     };
   }

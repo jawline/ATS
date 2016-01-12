@@ -1,0 +1,17 @@
+Searching 73 files for "stmt->getCompiled"
+
+Unable to open ~/Dropbox/Current/ATS//obj/src/main.o
+Unable to open ~/Dropbox/Current/ATS//obj/src/parser.o
+Unable to open ~/Dropbox/Current/ATS//obj/src/tokens.o
+Unable to open ~/Dropbox/Current/ATS//obj/src/jit/jfunction.o
+Unable to open ~/Dropbox/Current/ATS//obj/src/jit/jhelper.o
+Unable to open ~/Dropbox/Current/ATS//obj/src/jit/jtemplate.o
+Unable to open ~/Dropbox/Current/ATS//obj/src/jit/jtype.o
+Unable to open ~/Dropbox/Current/ATS//obj/src/utils/bytebuffer.o
+/Users/pbai002/Dropbox/Current/ATS//src/jit/jfunction.cpp:
+   47  
+   48  JFPTR Function::getFnPtr() {
+   49:   return _stmt->getCompiled();
+   50  }
+
+1 match in 1 file

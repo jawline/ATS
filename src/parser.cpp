@@ -307,8 +307,9 @@ bool Parser::innerParse(char const*& input) {
 			return false;
 		}
 
-		fn.simplify(_chainer);
 		fn.rewriteCallbacks();
+
+		fn.simplify(_chainer);
 
 		std::vector<Type> argTypes;
 		auto checkResult = fn.checkResultType(argTypes, pcf);
@@ -344,9 +345,10 @@ bool Parser::innerParse(char const*& input) {
 			if (!resolveAll()) {
 				return false;
 			}
+			
+			fn.rewriteCallbacks();
 
 			fn.simplify(_chainer);
-			fn.rewriteCallbacks();
 
 			std::vector<Type> argTypes;
 			auto checkResult = fn.checkResultType(argTypes, pcf);
