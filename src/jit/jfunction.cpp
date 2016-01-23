@@ -42,7 +42,9 @@ void Function::simplify(SafeAnalysis analysis) {
 }
 
 int64_t Function::run() {
-  return getFnPtr()();
+  auto fnPointer = getFnPtr();
+  rewriteCallbacks();
+  return fnPointer();
 }
 
 JFPTR Function::getFnPtr() {

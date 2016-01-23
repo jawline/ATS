@@ -307,8 +307,6 @@ bool Parser::innerParse(char const*& input) {
 			return false;
 		}
 
-		fn.rewriteCallbacks();
-
 		fn.simplify(_chainer);
 
 		std::vector<Type> argTypes;
@@ -346,8 +344,6 @@ bool Parser::innerParse(char const*& input) {
 				return false;
 			}
 			
-			fn.rewriteCallbacks();
-
 			fn.simplify(_chainer);
 
 			std::vector<Type> argTypes;
