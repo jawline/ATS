@@ -6,7 +6,7 @@ using namespace JIT::Expressions;
 JIT::Expressions::SafeExpression ConstantFunctionSubstitution::doAnalysis(JIT::Expressions::SafeExpression expression) const {
 
 	if (expression->getExpressionType() == FunctionCall && AnalysisUtils::isAtomic(expression->getCallbackExpression())) {
-		printf("Replacing a function by an atomic\n");
+		ANote("Replacing entire function by constant");
 		return expression->getCallbackExpression();
 	} else {
 		std::vector<SafeExpression> simplifiedArguments;

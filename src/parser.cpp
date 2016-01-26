@@ -64,10 +64,6 @@ bool Parser::resolveAll() {
 		}
 	}
 
-	for (auto it = _functions.begin(); it != _functions.end(); it++) {
-		it->second->rewriteCallbacks();
-	}
-
 	return true;
 }
 

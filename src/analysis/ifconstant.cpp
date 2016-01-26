@@ -19,7 +19,7 @@ JIT::Expressions::SafeExpression IfConstant::doConstantAnalysis(JIT::Expressions
 		return expression;
 	}
 
-	printf("Simplifying an if which always evaluates to a constant\n");
+	ANote("If has a constant condition, removing if");
 
 	if (willEvaluateToTrue(expression->getArguments()[0])) {
 		return expression->getArguments()[1];

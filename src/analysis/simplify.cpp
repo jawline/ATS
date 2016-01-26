@@ -1,6 +1,7 @@
 #include "simplify.h"
 #include "../jit/expr/atom.h"
 #include "utils.h"
+#include <sstream>
 
 using namespace JIT;
 using namespace JIT::Expressions;
@@ -50,8 +51,9 @@ SafeExpression Simplifier::remakeExpression(JIT::Expressions::SafeExpression exp
 			printf("ERROR SIMPLIFYING\n");
 			return nullptr;
 		}
-
-		printf("Simplified arithmetic to %i from (%i, %i)\n", atomicValue, lhsVal, rhsVal);
+		std::stringstream debug;
+		debug << "Simplified arithmetic to " << atomicValue;
+		ANote(debug.str());
 		return SafeExpression(new Atom(atomicValue));
 	}
 
