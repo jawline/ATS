@@ -65,9 +65,7 @@ CompiledExpression::CompiledExpression(SafeExpression expr, size_t numArgs) {
 }
 
 CompiledExpression::~CompiledExpression() {
-  if (_cachedCallback) {
-    Helper::freeFunctionPointer(_cachedCallback, _fnSize);
-  }
+  freeStoredPointer();
 }
 
 void CompiledExpression::prepare(size_t numArgs, std::vector<SafeCompiledExpression> const& currentCalls) {
@@ -86,7 +84,15 @@ void CompiledExpression::prepare(size_t numArgs, std::vector<SafeCompiledExpress
   _fnSize = buffer.current();
 }
 
+void CompiledExpression::freeStoredPointer() {
+  if (_cachedCallback) {
+    Helper::freeFunctionPointer(_cachedCallback, _fnSize);
+    _cachedCallback = nullptr;
+  }
+}
+
 void CompiledExpression::setExpression(SafeExpression const& expr) {
+  freeStoredPointer();
   _expr = expr;
 }
 

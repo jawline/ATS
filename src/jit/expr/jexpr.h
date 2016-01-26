@@ -100,6 +100,7 @@ namespace JIT {
         size_t _numArgs;
 
         void prepare(size_t numArgs, std::vector<SafeCompiledExpression> const& currentCalls);
+        void freeStoredPointer();
 
       public:
           CompiledExpression(SafeExpression expression, size_t nArgs);
