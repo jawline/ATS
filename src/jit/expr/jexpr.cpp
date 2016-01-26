@@ -100,7 +100,6 @@ void CompiledExpression::rewriteCallbacks() {
     return;
   }
 
-  printf("TODO: Rewriting callbacks still doesn't work\n");
   for (unsigned int i = 0; i < _unresolvedCallList.size(); i++) {
     
     auto basicList = std::vector<SafeCompiledExpression>();
@@ -109,7 +108,7 @@ void CompiledExpression::rewriteCallbacks() {
     auto foundCallback = _unresolvedCallList[i].first->getCompiled(basicList);
 
     if (foundCallback) {
-      printf("Rewrote a callback\n");
+      printf("Rewrote the actual callback pointer\n");
       Helper::updateAddress(_cachedCallback, _unresolvedCallList[i].second, (void*) foundCallback);
       _unresolvedCallList.erase(_unresolvedCallList.begin() + i);
       //Drop back by 1 as the next item will now hold this items index

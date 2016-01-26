@@ -18,7 +18,6 @@ void FCall::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<SafeCompi
         Helper::setArgumentStackTop(i - 1, buffer);
       }
 
-
       //TODO: I NEED ERROR PROPAGATION THROUGH HERE
       //TODO: OR THE TYPE CHECKER NEEDS TO VERIFY ALL CALLBACKS ARE RESOLVED
       void* callbackLocation = (void*) Callbacks::unresolved;
@@ -39,7 +38,7 @@ void FCall::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<SafeCompi
       size_t addressStart = Helper::callFunction(callbackLocation, buffer);
 
       if (recursion || !_callbackEntry.get()) {
-        printf("ERROR: Unresolved callback\n");
+        //printf("ERROR: Unresolved callback\n");
         unresolvedList.push_back(std::pair<SafeCompiledExpression, size_t>(_callbackEntry, addressStart));
       }
 }

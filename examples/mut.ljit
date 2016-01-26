@@ -1,4 +1,4 @@
 fn even(n) -> (if n (odd (- n 1)) true)
 fn odd(n) -> (if n (even (- n 1)) false)
 
-(odd 150)
+(even 150)

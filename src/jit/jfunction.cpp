@@ -30,7 +30,8 @@ void Function::rewriteCallbacks() {
   checkResultType(storedTypes, callList);
 
   for (unsigned int i = 0; i < callList.size(); i++) {
-    
+    callList[i].cexpr->rewriteCallbacks();
+    printf("Rewrote callbacks\n");
   }
 }
 
