@@ -1,3 +1,6 @@
+#define __STDC_FORMAT_MACROS
+#include <inttypes.h>
+
 #include "parser.h"
 #include <vector>
 #include <stdio.h>
@@ -32,7 +35,8 @@ Parser::Parser() {
 
 Parser::~Parser() {}
 
-#define CHECK(x) if (x == nullptr) { return nullptr; }
+#define CHECKT(x, r) if (x == nullptr) { return r; }
+#define CHECK(x) CHECKT(x, nullptr)
 
 SafeExpression Parser::parseAtom(char const*& input) {
 	auto token = _tokeniser.nextToken(input);
@@ -295,7 +299,7 @@ bool Parser::innerParse(char const*& input) {
 
 	if (next.id() == LPAREN) {
 		SafeExpression block = parseBlock(input, std::vector<std::string>());
-		CHECK(block);
+		CHECKT(block, false);
 		
 		Function fn = Function("anonymous", block, 0);
 		
@@ -317,7 +321,7 @@ bool Parser::innerParse(char const*& input) {
 		} else {
 			
 			if (checkResult.resultType.getTypeID() == TypeIdentifier::Integer) {
-				printf("Line Result: %li\n", fn.run());
+				printf("Line Result: %" PRId64 "\n", fn.run());
 			} else if (checkResult.resultType.getTypeID() == TypeIdentifier::Boolean) {
 				printf("Line Result: %s\n", fn.run() != 0 ? "true" : "false");
 			} else {
@@ -332,7 +336,7 @@ bool Parser::innerParse(char const*& input) {
 
 		if (next.id() == LPAREN) {
 			SafeExpression block = parseBlock(input, std::vector<std::string>());
-			CHECK(block);
+			CHECKT(block, false);
 
 			Function fn = Function("anonymous", block, 0);
 
@@ -361,7 +365,7 @@ bool Parser::innerParse(char const*& input) {
 			}
 		} else {
 			printf("Error, expected LPAREN after :t\n");
-			return nullptr;
+			return false;
 		}
 
 	} else if (next.id() == FUNCTION) {

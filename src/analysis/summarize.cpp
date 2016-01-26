@@ -31,7 +31,7 @@ JIT::Expressions::SafeExpression Summarize::doAnalysis(JIT::Expressions::SafeExp
 
 	if (canSummarize(expression)) {
 		//TODO: Fix summarizer
-		ANote("TODO: Summarize Unfinished\n");
+		ANote("TODO: Summarize Unfinished");
 	}
 
 	return expression;
