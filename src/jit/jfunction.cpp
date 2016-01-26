@@ -6,7 +6,7 @@ using namespace Assembler;
 using namespace Expressions;
 
 Function::Function(std::string const& name, SafeExpression const& stmt, size_t numArgs) {
-  _stmt = SafeCompiledExpression(new CompiledStatement(stmt, numArgs));
+  _stmt = SafeCompiledExpression(new CompiledExpression(stmt, numArgs));
   _numArgs = numArgs;
 }
 
@@ -34,7 +34,7 @@ void Function::rewriteCallbacks() {
   }
 }
 
-Expressions::SafeCompiledExpression Function::getCompiledStatement() const {
+Expressions::SafeCompiledExpression Function::getCompiledExpression() const {
   return _stmt;
 }
 

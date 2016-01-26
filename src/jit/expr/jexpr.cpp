@@ -54,23 +54,23 @@ SafeExpression Expression::getCallbackExpression() const {
   return _callbackEntry->getExpression();
 }
 
-SafeCompiledExpression Expression::getCallbackCompiledStatement() const {
+SafeCompiledExpression Expression::getCallbackCompiledExpression() const {
   return _callbackEntry;
 }
 
-CompiledStatement::CompiledStatement(SafeExpression expr, size_t numArgs) {
+CompiledExpression::CompiledExpression(SafeExpression expr, size_t numArgs) {
   _expr = expr;
   _cachedCallback = nullptr;
   _numArgs = numArgs;
 }
 
-CompiledStatement::~CompiledStatement() {
+CompiledExpression::~CompiledExpression() {
   if (_cachedCallback) {
     Helper::freeFunctionPointer(_cachedCallback, _fnSize);
   }
 }
 
-void CompiledStatement::prepare(size_t numArgs, std::vector<SafeCompiledExpression> const& currentCalls) {
+void CompiledExpression::prepare(size_t numArgs, std::vector<SafeCompiledExpression> const& currentCalls) {
   ByteBuffer buffer;
 
   Helper::insertPrologue(buffer);
@@ -86,15 +86,15 @@ void CompiledStatement::prepare(size_t numArgs, std::vector<SafeCompiledExpressi
   _fnSize = buffer.current();
 }
 
-void CompiledStatement::setExpression(SafeExpression const& expr) {
+void CompiledExpression::setExpression(SafeExpression const& expr) {
   _expr = expr;
 }
 
-SafeExpression CompiledStatement::getExpression() const {
+SafeExpression CompiledExpression::getExpression() const {
   return _expr;
 }
 
-void CompiledStatement::rewriteCallbacks() {
+void CompiledExpression::rewriteCallbacks() {
 
   if (!_cachedCallback) {
     return;
@@ -118,7 +118,7 @@ void CompiledStatement::rewriteCallbacks() {
   }
 }
 
-JFPTR CompiledStatement::getCompiled(std::vector<SafeCompiledExpression> const& currentCalls) {
+JFPTR CompiledExpression::getCompiled(std::vector<SafeCompiledExpression> const& currentCalls) {
   
   if (!_cachedCallback) {
     prepare(_numArgs, currentCalls);

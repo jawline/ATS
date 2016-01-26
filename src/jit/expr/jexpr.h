@@ -34,8 +34,8 @@ namespace JIT {
     typedef std::shared_ptr<class Expression> SafeExpression;
 
 
-    class CompiledStatement;
-    typedef std::shared_ptr<class CompiledStatement> SafeCompiledExpression;
+    class CompiledExpression;
+    typedef std::shared_ptr<class CompiledExpression> SafeCompiledExpression;
 
     /**
      * Structure returned by type checker for method calls
@@ -72,7 +72,7 @@ namespace JIT {
            * Relates to the address of the method being called
            */
           void setCallbackEntry(SafeCompiledExpression const& stmt);
-          SafeCompiledExpression getCallbackCompiledStatement() const;
+          SafeCompiledExpression getCallbackCompiledExpression() const;
           SafeExpression getCallbackExpression() const;
 
           int getNumArgs() const;
@@ -89,7 +89,7 @@ namespace JIT {
           virtual ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions);
     };
 
-    class CompiledStatement {
+    class CompiledExpression {
       private:
         SafeExpression _expr;
 
@@ -102,8 +102,8 @@ namespace JIT {
         void prepare(size_t numArgs, std::vector<SafeCompiledExpression> const& currentCalls);
 
       public:
-          CompiledStatement(SafeExpression expression, size_t nArgs);
-          virtual ~CompiledStatement();
+          CompiledExpression(SafeExpression expression, size_t nArgs);
+          virtual ~CompiledExpression();
 
           void setExpression(SafeExpression const& expression);
           SafeExpression getExpression() const;
