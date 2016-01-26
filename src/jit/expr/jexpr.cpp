@@ -6,7 +6,6 @@ using namespace Expressions;
 using namespace Assembler;
 
 //TODO: callbackExpression can cause a leak as the ref counter will never deref
-//TODO: entryRef will do the same
 
 Expression::Expression(ExpressionType type, std::vector<SafeExpression> const& args) {
   _type = type;
