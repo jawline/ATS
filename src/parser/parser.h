@@ -1,8 +1,7 @@
 #ifndef _COREASM_PARSER_DEF_H_
 #define _COREASM_PARSER_DEF_H_
-#include "utils/bytebuffer.h"
-#include "jit/jfunction.h"
-#include "analysis/analysis.h"
+#include "../jit/jfunction.h"
+#include "../analysis/analysis.h"
 #include "tokens.h"
 #include <string>
 #include <vector>

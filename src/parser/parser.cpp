@@ -5,18 +5,18 @@
 #include <vector>
 #include <stdio.h>
 
-#include "analysis/chain.h"
-#include "analysis/ifconstant.h"
-#include "analysis/summarize.h"
-#include "analysis/simplify.h"
-#include "analysis/constantfunctionsubstitution.h"
+#include "../analysis/chain.h"
+#include "../analysis/ifconstant.h"
+#include "../analysis/summarize.h"
+#include "../analysis/simplify.h"
+#include "../analysis/constantfunctionsubstitution.h"
 
-#include "jit/expr/arith.h"
-#include "jit/expr/atom.h"
-#include "jit/expr/sval.h"
-#include "jit/expr/fcall.h"
-#include "jit/expr/if.h"
-#include "jit/jcallbacks.h"
+#include "../jit/expr/arith.h"
+#include "../jit/expr/atom.h"
+#include "../jit/expr/sval.h"
+#include "../jit/expr/fcall.h"
+#include "../jit/expr/if.h"
+#include "../jit/jcallbacks.h"
 
 using namespace Assembler;
 using namespace JIT;

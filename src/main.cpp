@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "jit/jfunction.h"
 #include "utils/bytebuffer.h"
-#include "parser.h"
+#include "parser/parser.h"
 
 int writeToFile(Assembler::ByteBuffer const& buffer, char const* filename) {
 	
