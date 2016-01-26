@@ -52,7 +52,7 @@ SafeExpression Simplifier::remakeExpression(JIT::Expressions::SafeExpression exp
 			return nullptr;
 		}
 		std::stringstream debug;
-		debug << "Simplified arithmetic to " << atomicValue;
+		debug << "Simplified arithmetic to " << atomicValue << " from (" << lhsVal << ", " << rhsVal << ")";
 		ANote(debug.str());
 		return SafeExpression(new Atom(atomicValue));
 	}

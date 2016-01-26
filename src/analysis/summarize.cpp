@@ -31,7 +31,7 @@ JIT::Expressions::SafeExpression Summarize::doAnalysis(JIT::Expressions::SafeExp
 
 	if (canSummarize(expression)) {
 		//TODO: Fix summarizer
-		printf("I may be able to do something here\n");
+		ANote("TODO: Summarize Unfinished\n");
 	}
 
 	return expression;
