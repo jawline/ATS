@@ -8,6 +8,7 @@
 namespace JIT {
 	class Function {
 	private:
+		void rewriteCallbacks();
 		Expressions::SafeCompiledExpression _stmt;
 		size_t _numArgs;
 
@@ -15,7 +16,6 @@ namespace JIT {
 		Function(std::string const& name, Expressions::SafeExpression const& stmt, size_t numArgs);
 		~Function();
 
-		void rewriteCallbacks();
 		int64_t run();
 		JFPTR getFnPtr();
 

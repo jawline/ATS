@@ -48,6 +48,18 @@ ExpressionCheckResult Function::checkResultType(std::vector<Type> const& storedT
 }
 
 void Function::simplify(SafeAnalysis analysis) {
+
+  //TODO: Ugly
+  //Simplify all functions that this function calls
+  //Back to front to simplify deepest methods first
+  std::vector<Type> storedTypes;
+  auto callList = std::vector<Expressions::MethodCall>();
+  checkResultType(storedTypes, callList);
+
+  for (int i = callList.size() - 1; i >= 0; i--) {
+    callList[i].cexpr->setExpression(analysis->doAnalysis(callList[i].cexpr->getExpression()));
+  }
+
   _stmt->setExpression(analysis->doAnalysis(_stmt->getExpression()));
 }
 
