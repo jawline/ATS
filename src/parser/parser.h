@@ -22,6 +22,7 @@ namespace Assembler {
 		JIT::Expressions::SafeExpression parseArg(char const*& input, std::vector<std::string> const& argList);
 		JIT::Expressions::SafeExpression parseFunctionCall(char const*& input, std::vector<std::string> const& argList);
 		JIT::Expressions::SafeExpression parseBlock(char const*& input, std::vector<std::string> const& argList);
+		JIT::SafeFunction parseAnonFunction(char const*& input);
 		
 		bool resolveAll();
 		int getArg(std::string arg, std::vector<std::string> const& argList);

@@ -287,6 +287,21 @@ bool Parser::parseFunction(char const*& input, std::map<std::string, SafeFunctio
 	return true;
 }
 
+JIT::SafeFunction Parser::parseAnonFunction(char const*& input) {
+	SafeExpression block = parseBlock(input, std::vector<std::string>());
+	CHECK(block);
+		
+	SafeFunction fn = SafeFunction(new Function("anonymous", block, 0));
+		
+	if (!resolveAll()) {
+		return nullptr;
+	}
+
+	fn->simplify(_chainer);
+
+	return fn;	
+}
+
 bool Parser::innerParse(char const*& input) {
 	
 	Token next = _tokeniser.peekToken(input);
@@ -298,19 +313,11 @@ bool Parser::innerParse(char const*& input) {
 	auto pcf = std::vector<MethodCall>();
 
 	if (next.id() == LPAREN) {
-		SafeExpression block = parseBlock(input, std::vector<std::string>());
-		CHECKT(block, false);
-		
-		Function fn = Function("anonymous", block, 0);
-		
-		if (!resolveAll()) {
-			return false;
-		}
-
-		fn.simplify(_chainer);
+		auto fn = parseAnonFunction(input);
+		CHECKT(fn, false);
 
 		std::vector<Type> argTypes;
-		auto checkResult = fn.checkResultType(argTypes, pcf);
+		auto checkResult = fn->checkResultType(argTypes, pcf);
 
 		if (checkResult.result != ExpressionCheckResult::Valid) {
 			if (checkResult.result == ExpressionCheckResult::InfinateRecursion) {
@@ -320,13 +327,14 @@ bool Parser::innerParse(char const*& input) {
 			}
 		} else {
 			
+			auto result = fn->run();
+
 			if (checkResult.resultType.getTypeID() == TypeIdentifier::Integer) {
-				printf("Line Result: %" PRId64 "\n", fn.run());
+				printf("Line Result: %" PRId64 "\n", result);
 			} else if (checkResult.resultType.getTypeID() == TypeIdentifier::Boolean) {
-				printf("Line Result: %s\n", fn.run() != 0 ? "true" : "false");
+				printf("Line Result: %s\n", result != 0 ? "true" : "false");
 			} else {
-				fn.run();
-				printf("TODO: I don't know how to print this line");
+				printf("TODO: I don't know how to print this output");
 			}
 		}
 
