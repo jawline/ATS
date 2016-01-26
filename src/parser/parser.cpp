@@ -343,19 +343,11 @@ bool Parser::innerParse(char const*& input) {
 		next = _tokeniser.peekToken(input);
 
 		if (next.id() == LPAREN) {
-			SafeExpression block = parseBlock(input, std::vector<std::string>());
-			CHECKT(block, false);
-
-			Function fn = Function("anonymous", block, 0);
-
-			if (!resolveAll()) {
-				return false;
-			}
-			
-			fn.simplify(_chainer);
+			auto fn = parseAnonFunction(input);
+			CHECKT(fn, false);
 
 			std::vector<Type> argTypes;
-			auto checkResult = fn.checkResultType(argTypes, pcf);
+			auto checkResult = fn->checkResultType(argTypes, pcf);
 
 			std::string name = typeOfQuery.asString();
 
