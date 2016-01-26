@@ -32,6 +32,10 @@ void Arithmetic::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<Safe
 	      _args[1]->write(buffer, unresolvedList, currentCalls);
 	      Helper::divTopTwoStack(buffer);
 	      break;
+	    default:
+	    	//Should never be reached, indicates parsing error
+	    	printf("ERROR: THIS IS NOT ARITHMETIC\n");
+	    	break;
 	};
 }
 
