@@ -5,7 +5,6 @@
 namespace JIT {
   class Callbacks {
     public:
-      static int64_t print(int64_t val);
       static int64_t unresolved();
   };
 }
