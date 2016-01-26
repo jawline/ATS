@@ -38,7 +38,6 @@ void FCall::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<SafeCompi
       size_t addressStart = Helper::callFunction(callbackLocation, buffer);
 
       if (recursion || !_callbackEntry.get()) {
-        //printf("ERROR: Unresolved callback\n");
         unresolvedList.push_back(std::pair<SafeCompiledExpression, size_t>(_callbackEntry, addressStart));
       }
 }
