@@ -9,5 +9,5 @@ bool AnalysisUtils::isAtomic(JIT::Expressions::SafeExpression const& expression)
 }
 
 int64_t AnalysisUtils::getValueActual(JIT::Expressions::SafeExpression const& expr) {
-	return ((Atom*) expr.get())->getValueActual() != 0;
+	return ((Atom*) expr.get())->getValueActual();
 }

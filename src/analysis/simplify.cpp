@@ -19,7 +19,7 @@ SafeExpression Simplifier::doAnalysis(SafeExpression expression) const {
 }
 
 bool Simplifier::knowHowToSimplify(SafeExpression expression) const {
-	return expression->getExpressionType() == ExpressionType::AtomType || expression->getExpressionType() == ExpressionType::Add;
+	return expression->getExpressionType() == ExpressionType::AtomType || expression->getExpressionType() == ExpressionType::Add || ExpressionType::Subtract || ExpressionType::Multiply || ExpressionType::Divide;
 }
 
 SafeExpression Simplifier::remakeExpression(JIT::Expressions::SafeExpression expression) const {
@@ -51,7 +51,7 @@ SafeExpression Simplifier::remakeExpression(JIT::Expressions::SafeExpression exp
 			return nullptr;
 		}
 
-		printf("Simplified arithmetic to %i\n", atomicValue);
+		printf("Simplified arithmetic to %i from (%i, %i)\n", atomicValue, lhsVal, rhsVal);
 		return SafeExpression(new Atom(atomicValue));
 	}
 
