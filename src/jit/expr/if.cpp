@@ -20,11 +20,7 @@ void If::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<SafeCompiled
       size_t elseLocation = buffer.current();
       
       //If the if comes with an else then write it otherwise write 0
-      if (_args.size() == 3) {
-        _args[2]->write(buffer, unresolvedList, currentCalls);
-      } else {
-        printf("ERROR EXPECTED 3 ARGS\n");
-      }
+      _args[2]->write(buffer, unresolvedList, currentCalls);
       
       //Rewrite the dummy relative locations to be the actual exit
       size_t exitLocation = buffer.current();
