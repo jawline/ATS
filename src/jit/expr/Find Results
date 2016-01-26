@@ -1,0 +1,209 @@
+Searching 62 files for "MethodCall"
+
+~/Dropbox/Current/ATS/obj/src/analysis/chain.o:
+    <binary>
+
+~/Dropbox/Current/ATS/obj/src/analysis/constantfunctionsubstitution.o:
+    <binary>
+
+~/Dropbox/Current/ATS/obj/src/analysis/ifconstant.o:
+    <binary>
+
+~/Dropbox/Current/ATS/obj/src/analysis/simplify.o:
+    <binary>
+
+~/Dropbox/Current/ATS/obj/src/analysis/summarize.o:
+    <binary>
+
+~/Dropbox/Current/ATS/obj/src/analysis/utils.o:
+    <binary>
+
+~/Dropbox/Current/ATS/obj/src/jit/expr/arith.o:
+    <binary>
+
+~/Dropbox/Current/ATS/obj/src/jit/expr/atom.o:
+    <binary>
+
+~/Dropbox/Current/ATS/obj/src/jit/expr/fcall.o:
+    <binary>
+
+~/Dropbox/Current/ATS/obj/src/jit/expr/if.o:
+    <binary>
+
+~/Dropbox/Current/ATS/obj/src/jit/expr/jexpr.o:
+    <binary>
+
+~/Dropbox/Current/ATS/obj/src/jit/expr/sval.o:
+    <binary>
+
+/Users/pbai002/Dropbox/Current/ATS/src/parser.cpp:
+  296  	}
+  297  
+  298: 	auto pcf = std::vector<MethodCall>();
+  299  
+  300  	if (next.id() == LPAREN) {
+
+/Users/pbai002/Dropbox/Current/ATS/src/jit/jfunction.cpp:
+   27    //Rewrite functions this function calls
+   28    std::vector<Type> storedTypes;
+   29:   auto callList = std::vector<Expressions::MethodCall>();
+   30    checkResultType(storedTypes, potentialMethods);
+   31  
+   ..
+   39  }
+   40  
+   41: ExpressionCheckResult Function::checkResultType(std::vector<Type> const& storedTypes, std::vector<Expressions::MethodCall>& potentialMethods) {
+   42    
+   43    if (_numArgs != storedTypes.size()) {
+
+/Users/pbai002/Dropbox/Current/ATS/src/jit/jfunction.h:
+   22  		Expressions::SafeCompiledStatement getCompiledStatement() const;
+   23  		Expressions::SafeExpression expression() const;
+   24: 		Expressions::ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes, std::vector<Expressions::MethodCall>& potentialMethods);
+   25  
+   26  		size_t getNumArgs() const;
+
+/Users/pbai002/Dropbox/Current/ATS/src/jit/expr/arith.cpp:
+   36  }
+   37  
+   38: BaseCheckResult Arithmetic::getBaseType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) {
+   39  	auto lhsType = _args[0]->getBaseType(storedTypes, potentiallyCalledFunctions);
+   40  	auto rhsType = _args[1]->getBaseType(storedTypes, potentiallyCalledFunctions);
+   ..
+   51  }
+   52  
+   53: ExpressionCheckResult Arithmetic::checkResultType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) {
+   54        auto lhsCheck = _args[0]->checkResultType(storedTypes, potentiallyCalledFunctions);
+   55        auto rhsCheck = _args[1]->checkResultType(storedTypes, potentiallyCalledFunctions);
+
+/Users/pbai002/Dropbox/Current/ATS/src/jit/expr/arith.h:
+   12          	void write(Assembler::ByteBuffer& buffer, std::vector<std::pair<SafeCompiledStatement, size_t>>& unresolvedList, std::vector<SafeCompiledStatement> const& currentCalls);
+   13  
+   14:         	BaseCheckResult getBaseType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions);
+   15: 			ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions);
+   16  		};
+   17  	}
+
+/Users/pbai002/Dropbox/Current/ATS/src/jit/expr/atom.cpp:
+   18  }
+   19  
+   20: BaseCheckResult Atom::getBaseType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) {
+   21  	return BaseCheckResult{false, Type(_atomType)};
+   22  }
+   23  
+   24: ExpressionCheckResult Atom::checkResultType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) {
+   25  	return ExpressionCheckResult{ExpressionCheckResult::Valid, Type(_atomType)};
+   26  }
+
+/Users/pbai002/Dropbox/Current/ATS/src/jit/expr/atom.h:
+   17          	void write(Assembler::ByteBuffer& buffer, std::vector<std::pair<SafeCompiledStatement, size_t>>& unresolvedList, std::vector<SafeCompiledStatement> const& currentCalls);
+   18  
+   19:         	BaseCheckResult getBaseType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions);
+   20: 			ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions);
+   21  		};
+   22  	}
+
+/Users/pbai002/Dropbox/Current/ATS/src/jit/expr/fcall.cpp:
+   45  }
+   46  
+   47: bool FCall::isRecursion(std::vector<Type> const& storedTypes, std::vector<Type> const& argTypes, std::vector<MethodCall> const& potentiallyCalledFunctions) const {
+   48    for (unsigned int i = 0; i < potentiallyCalledFunctions.size(); i++) {
+   49      if (potentiallyCalledFunctions[i].stmt.get() == getCallbackExpression().get()) {
+   ..
+   72  }
+   73  
+   74: BaseCheckResult FCall::getBaseType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) {
+   75  
+   76        std::vector<Type> argTypes;
+   ..
+   90        }
+   91  
+   92:       potentiallyCalledFunctions.push_back(MethodCall{getCallbackExpression(), argTypes});
+   93        return getCallbackExpression()->getBaseType(storedTypes, potentiallyCalledFunctions);
+   94  }
+   95  
+   96: ExpressionCheckResult FCall::checkResultType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) {
+   97  
+   98        if (getCallbackExpression() == nullptr) {
+   ..
+  124        }
+  125  
+  126:       potentiallyCalledFunctions.push_back(MethodCall{getCallbackExpression(), argTypes});
+  127        return getCallbackExpression()->checkResultType(argTypes, potentiallyCalledFunctions);
+  128  }
+
+/Users/pbai002/Dropbox/Current/ATS/src/jit/expr/fcall.h:
+    7  		class FCall: public Expression {
+    8  		private:
+    9: 			bool isRecursion(std::vector<Type> const& storedTypes, std::vector<Type> const& argTypes, std::vector<MethodCall> const& potentiallyCalledFunctions) const;
+   10          public:
+   11          	FCall(std::vector<SafeExpression> const& args);
+   12  
+   13          	void write(Assembler::ByteBuffer& buffer, std::vector<std::pair<SafeCompiledStatement, size_t>>& unresolvedList, std::vector<SafeCompiledStatement> const& currentCalls);
+   14: 			ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions);
+   15: 			BaseCheckResult getBaseType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions);
+   16  		};
+   17  	}
+
+/Users/pbai002/Dropbox/Current/ATS/src/jit/expr/if.cpp:
+   38  }
+   39  
+   40: BaseCheckResult If::getBaseType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) {
+   41    auto lhsType = _args[1]->getBaseType(storedTypes, potentiallyCalledFunctions);
+   42    auto rhsType = _args[2]->getBaseType(storedTypes, potentiallyCalledFunctions);
+   ..
+   53  }
+   54  
+   55: ExpressionCheckResult If::checkResultType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) {
+   56  
+   57        //TODO: This may not work? potentiallyCalledFunctions may be changed by one of the branches leading to a reduction in exploration
+
+/Users/pbai002/Dropbox/Current/ATS/src/jit/expr/if.h:
+   12          	void write(Assembler::ByteBuffer& buffer, std::vector<std::pair<SafeCompiledStatement, size_t>>& unresolvedList, std::vector<SafeCompiledStatement> const& currentCalls);
+   13  
+   14:         	BaseCheckResult getBaseType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions);
+   15: 			ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions);
+   16  		};
+   17  	}
+
+/Users/pbai002/Dropbox/Current/ATS/src/jit/expr/jexpr.cpp:
+   47  }
+   48  
+   49: ExpressionCheckResult Expression::checkResultType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) {
+   50    return ExpressionCheckResult{ExpressionCheckResult::Invalid, Type(TypeIdentifier::Unknown)};
+   51  }
+
+/Users/pbai002/Dropbox/Current/ATS/src/jit/expr/jexpr.h:
+   34      typedef std::shared_ptr<class Expression> SafeExpression;
+   35  
+   36:     struct MethodCall {
+   37        SafeExpression stmt;
+   38        std::vector<Type> calledWith;
+   ..
+   82             * Type checker
+   83             */
+   84:           virtual BaseCheckResult getBaseType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) { return BaseCheckResult{false, Unknown}; }
+   85:           virtual ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions);
+   86      };
+   87  
+
+/Users/pbai002/Dropbox/Current/ATS/src/jit/expr/sval.cpp:
+   12  }
+   13  
+   14: BaseCheckResult SVal::getBaseType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) {
+   15  	return BaseCheckResult{false, storedTypes[_index]};
+   16  }
+   17  
+   18: ExpressionCheckResult SVal::checkResultType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) {
+   19  	return ExpressionCheckResult{ExpressionCheckResult::Valid, storedTypes[_index]};
+   20  }
+
+/Users/pbai002/Dropbox/Current/ATS/src/jit/expr/sval.h:
+   14          	void write(Assembler::ByteBuffer& buffer, std::vector<std::pair<SafeCompiledStatement, size_t>>& unresolvedList, std::vector<SafeCompiledStatement> const& currentCalls);
+   15          	
+   16:         	BaseCheckResult getBaseType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions);
+   17: 			ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions);
+   18  		};
+   19  	}
+
+417 matches across 27 files

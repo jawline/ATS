@@ -13,7 +13,7 @@ Atom::Atom(bool v) : Expression(ExpressionType::AtomType, std::vector<SafeExpres
 	_val = v;
 }
 
-void Atom::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<SafeCompiledStatement, size_t>>& unresolvedList, std::vector<SafeCompiledStatement> const& currentCalls) {
+void Atom::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<SafeCompiledExpression, size_t>>& unresolvedList, std::vector<SafeCompiledExpression> const& currentCalls) {
      Helper::pushNumber(_val, buffer);
 }
 

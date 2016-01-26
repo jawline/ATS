@@ -35,13 +35,13 @@ namespace JIT {
 
 
     class CompiledStatement;
-    typedef std::shared_ptr<class CompiledStatement> SafeCompiledStatement;
+    typedef std::shared_ptr<class CompiledStatement> SafeCompiledExpression;
 
     /**
      * Structure returned by type checker for method calls
      */
     struct MethodCall {
-      SafeCompiledStatement cexpr;
+      SafeCompiledExpression cexpr;
       std::vector<Type> calledWith;
     };
 
@@ -49,7 +49,7 @@ namespace JIT {
         protected:
           ExpressionType _type;
 
-          SafeCompiledStatement _callbackEntry;
+          SafeCompiledExpression _callbackEntry;
 
           /**
            * Marker used to identify the statement when printing (often "")
@@ -71,8 +71,8 @@ namespace JIT {
           /**
            * Relates to the address of the method being called
            */
-          void setCallbackEntry(SafeCompiledStatement const& stmt);
-          SafeCompiledStatement getCallbackCompiledStatement() const;
+          void setCallbackEntry(SafeCompiledExpression const& stmt);
+          SafeCompiledExpression getCallbackCompiledStatement() const;
           SafeExpression getCallbackExpression() const;
 
           int getNumArgs() const;
@@ -80,7 +80,7 @@ namespace JIT {
           /**
            * Does the actual JITTIng
            */
-          virtual void write(Assembler::ByteBuffer& buffer, std::vector<std::pair<SafeCompiledStatement, size_t>>& unresolvedList, std::vector<SafeCompiledStatement> const& currentCalls);
+          virtual void write(Assembler::ByteBuffer& buffer, std::vector<std::pair<SafeCompiledExpression, size_t>>& unresolvedList, std::vector<SafeCompiledExpression> const& currentCalls);
 
           /**
            * Type checker
@@ -93,13 +93,13 @@ namespace JIT {
       private:
         SafeExpression _expr;
 
-        std::vector<std::pair<SafeCompiledStatement, size_t>> _unresolvedCallList;
+        std::vector<std::pair<SafeCompiledExpression, size_t>> _unresolvedCallList;
 
         JFPTR _cachedCallback;
         size_t _fnSize;
         size_t _numArgs;
 
-        void prepare(size_t numArgs, std::vector<SafeCompiledStatement> const& currentCalls);
+        void prepare(size_t numArgs, std::vector<SafeCompiledExpression> const& currentCalls);
 
       public:
           CompiledStatement(SafeExpression expression, size_t nArgs);
@@ -108,7 +108,7 @@ namespace JIT {
           void setExpression(SafeExpression const& expression);
           SafeExpression getExpression() const;
 
-          JFPTR getCompiled(std::vector<SafeCompiledStatement> const& currentCalls);
+          JFPTR getCompiled(std::vector<SafeCompiledExpression> const& currentCalls);
 
           //This method links one call into another then mutual recursion means that memory locations are not both known on write
           void rewriteCallbacks();

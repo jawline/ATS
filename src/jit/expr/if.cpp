@@ -5,7 +5,7 @@ using namespace JIT::Expressions;
 
 If::If(std::vector<SafeExpression> const& args) : Expression(IfType, args) {}
 
-void If::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<SafeCompiledStatement, size_t>>& unresolvedList, std::vector<SafeCompiledStatement> const& currentCalls) {
+void If::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<SafeCompiledExpression, size_t>>& unresolvedList, std::vector<SafeCompiledExpression> const& currentCalls) {
 
       //Execute condition
       _args[0]->write(buffer, unresolvedList, currentCalls);

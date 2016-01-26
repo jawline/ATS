@@ -6,7 +6,7 @@ using namespace Assembler;
 using namespace Expressions;
 
 Function::Function(std::string const& name, SafeExpression const& stmt, size_t numArgs) {
-  _stmt = SafeCompiledStatement(new CompiledStatement(stmt, numArgs));
+  _stmt = SafeCompiledExpression(new CompiledStatement(stmt, numArgs));
   _numArgs = numArgs;
 }
 
@@ -34,7 +34,7 @@ void Function::rewriteCallbacks() {
   }
 }
 
-Expressions::SafeCompiledStatement Function::getCompiledStatement() const {
+Expressions::SafeCompiledExpression Function::getCompiledStatement() const {
   return _stmt;
 }
 
@@ -58,7 +58,7 @@ int64_t Function::run() {
 }
 
 JFPTR Function::getFnPtr() {
-  auto callList = std::vector<SafeCompiledStatement>();
+  auto callList = std::vector<SafeCompiledExpression>();
   callList.push_back(_stmt);
   return _stmt->getCompiled(callList);
 }

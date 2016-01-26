@@ -5,7 +5,7 @@ using namespace JIT::Expressions;
 
 Arithmetic::Arithmetic(ExpressionType type, std::vector<SafeExpression> const& args) : Expression(type, args) {}
 
-void Arithmetic::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<SafeCompiledStatement, size_t>>& unresolvedList, std::vector<SafeCompiledStatement> const& currentCalls) {
+void Arithmetic::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<SafeCompiledExpression, size_t>>& unresolvedList, std::vector<SafeCompiledExpression> const& currentCalls) {
 	switch (_type) {
 		case Add:
 	      _args[0]->write(buffer, unresolvedList, currentCalls);

@@ -8,7 +8,7 @@
 namespace JIT {
 	class Function {
 	private:
-		Expressions::SafeCompiledStatement _stmt;
+		Expressions::SafeCompiledExpression _stmt;
 		size_t _numArgs;
 
 	public:
@@ -19,7 +19,7 @@ namespace JIT {
 		int64_t run();
 		JFPTR getFnPtr();
 
-		Expressions::SafeCompiledStatement getCompiledStatement() const;
+		Expressions::SafeCompiledExpression getCompiledStatement() const;
 		Expressions::SafeExpression expression() const;
 		Expressions::ExpressionCheckResult checkResultType(std::vector<Type> const& storedTypes, std::vector<Expressions::MethodCall>& potentialMethods);
 

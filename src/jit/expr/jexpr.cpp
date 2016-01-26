@@ -14,7 +14,7 @@ Expression::Expression(ExpressionType type, std::vector<SafeExpression> const& a
   _callbackEntry = nullptr;
 }
 
-void Expression::setCallbackEntry(SafeCompiledStatement const& stmt) {
+void Expression::setCallbackEntry(SafeCompiledExpression const& stmt) {
   _callbackEntry = stmt;
 }
 
@@ -42,7 +42,7 @@ std::string Expression::getMarker() const {
   return _marker;
 }
 
-void Expression::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<SafeCompiledStatement, size_t>>& unresolvedList, std::vector<SafeCompiledStatement> const& currentCalls) {
+void Expression::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<SafeCompiledExpression, size_t>>& unresolvedList, std::vector<SafeCompiledExpression> const& currentCalls) {
   printf("JIT shouldnt be called on base type\n");
 }
 
@@ -54,7 +54,7 @@ SafeExpression Expression::getCallbackExpression() const {
   return _callbackEntry->getExpression();
 }
 
-SafeCompiledStatement Expression::getCallbackCompiledStatement() const {
+SafeCompiledExpression Expression::getCallbackCompiledStatement() const {
   return _callbackEntry;
 }
 
@@ -70,7 +70,7 @@ CompiledStatement::~CompiledStatement() {
   }
 }
 
-void CompiledStatement::prepare(size_t numArgs, std::vector<SafeCompiledStatement> const& currentCalls) {
+void CompiledStatement::prepare(size_t numArgs, std::vector<SafeCompiledExpression> const& currentCalls) {
   ByteBuffer buffer;
 
   Helper::insertPrologue(buffer);
@@ -103,7 +103,7 @@ void CompiledStatement::rewriteCallbacks() {
   printf("TODO: Rewriting callbacks still doesn't work\n");
   for (unsigned int i = 0; i < _unresolvedCallList.size(); i++) {
     
-    auto basicList = std::vector<SafeCompiledStatement>();
+    auto basicList = std::vector<SafeCompiledExpression>();
     basicList.push_back(_unresolvedCallList[i].first);
 
     auto foundCallback = _unresolvedCallList[i].first->getCompiled(basicList);
@@ -118,7 +118,7 @@ void CompiledStatement::rewriteCallbacks() {
   }
 }
 
-JFPTR CompiledStatement::getCompiled(std::vector<SafeCompiledStatement> const& currentCalls) {
+JFPTR CompiledStatement::getCompiled(std::vector<SafeCompiledExpression> const& currentCalls) {
   
   if (!_cachedCallback) {
     prepare(_numArgs, currentCalls);
