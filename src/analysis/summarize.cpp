@@ -17,7 +17,7 @@ bool Summarize::canSummarize(SafeExpression expression) const {
 	return true;
 }
 
-bool Summarize::isJustRecursion(SafeExpression expr) const {}
+bool Summarize::isJustRecursion(SafeExpression expr) const { /* TODO */ return false; }
 
 JIT::Expressions::SafeExpression Summarize::doAnalysis(JIT::Expressions::SafeExpression expression) const {
 	
