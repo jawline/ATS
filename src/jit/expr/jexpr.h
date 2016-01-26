@@ -33,13 +33,17 @@ namespace JIT {
 
     typedef std::shared_ptr<class Expression> SafeExpression;
 
-    struct MethodCall {
-      SafeExpression stmt;
-      std::vector<Type> calledWith;
-    };
 
     class CompiledStatement;
     typedef std::shared_ptr<class CompiledStatement> SafeCompiledStatement;
+
+    /**
+     * Structure returned by type checker for method calls
+     */
+    struct MethodCall {
+      SafeCompiledStatement cexpr;
+      std::vector<Type> calledWith;
+    };
 
     class Expression {
         protected:

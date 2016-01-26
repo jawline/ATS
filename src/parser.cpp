@@ -359,7 +359,7 @@ bool Parser::innerParse(char const*& input) {
 					if (i) {
 						printf(", ");
 					}
-					printf("%s", pcf[i].stmt->getMarker().c_str());
+					printf("%s", pcf[i].cexpr->getExpression()->getMarker().c_str());
 				}
 				printf("\n");
 			}

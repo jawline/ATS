@@ -46,7 +46,7 @@ void FCall::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<SafeCompi
 
 bool FCall::isRecursion(std::vector<Type> const& storedTypes, std::vector<Type> const& argTypes, std::vector<MethodCall> const& potentiallyCalledFunctions) const {
   for (unsigned int i = 0; i < potentiallyCalledFunctions.size(); i++) {
-    if (potentiallyCalledFunctions[i].stmt.get() == getCallbackExpression().get()) {
+    if (potentiallyCalledFunctions[i].cexpr->getExpression().get() == getCallbackExpression().get()) {
 
         if (argTypes.size() == potentiallyCalledFunctions[i].calledWith.size()) {
 
@@ -89,7 +89,7 @@ BaseCheckResult FCall::getBaseType(std::vector<Type> const& storedTypes, std::ve
         return BaseCheckResult{true, Unknown};
       }
 
-      potentiallyCalledFunctions.push_back(MethodCall{getCallbackExpression(), argTypes});
+      potentiallyCalledFunctions.push_back(MethodCall{_callbackEntry, argTypes});
       return getCallbackExpression()->getBaseType(storedTypes, potentiallyCalledFunctions);
 }
 
@@ -123,6 +123,6 @@ ExpressionCheckResult FCall::checkResultType(std::vector<Type> const& storedType
         return ExpressionCheckResult{ExpressionCheckResult::InfinateRecursion, baseTypeCheck.type};
       }
 
-      potentiallyCalledFunctions.push_back(MethodCall{getCallbackExpression(), argTypes});
+      potentiallyCalledFunctions.push_back(MethodCall{_callbackEntry, argTypes});
       return getCallbackExpression()->checkResultType(argTypes, potentiallyCalledFunctions);
 }

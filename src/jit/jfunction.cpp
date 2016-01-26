@@ -21,7 +21,17 @@ SafeExpression Function::expression() const {
 }
 
 void Function::rewriteCallbacks() {
+  
   _stmt->rewriteCallbacks();
+
+  //Rewrite functions this function calls
+  std::vector<Type> storedTypes;
+  auto callList = std::vector<Expressions::MethodCall>();
+  checkResultType(storedTypes, callList);
+
+  for (unsigned int i = 0; i < callList.size(); i++) {
+    
+  }
 }
 
 Expressions::SafeCompiledStatement Function::getCompiledStatement() const {
