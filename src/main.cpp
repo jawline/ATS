@@ -52,7 +52,12 @@ char* readFromFile(char const* filename) {
 }
 
 bool isArgument(char const* name, int argc, char** argv) {
-
+	for (int i = 0; i < argc; i++) {
+		if (strcmp(argv[i], name) == 0) {
+			return true;
+		}
+	}
+	return false;
 }
 
 char* getArgument(char const* name, int argc, char** argv) {
