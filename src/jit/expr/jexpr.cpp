@@ -52,7 +52,7 @@ ExpressionCheckResult Expression::checkResultType(std::vector<Type> const& store
 }
 
 SafeExpression Expression::getCallbackExpression() const {
-  return _callbackEntry->getExpression();
+  return _callbackEntry.get() ? _callbackEntry->getExpression() : nullptr;
 }
 
 SafeCompiledExpression Expression::getCallbackCompiledExpression() const {
