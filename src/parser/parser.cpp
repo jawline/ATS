@@ -4,6 +4,7 @@
 #include "parser.h"
 #include <vector>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include "../analysis/chain.h"
 #include "../analysis/ifconstant.h"
@@ -279,7 +280,6 @@ bool Parser::parseFunction(char const*& input, std::map<std::string, SafeFunctio
 
 	functionList[name] = SafeFunction(new Function(name, block, args.size()));
 
-	//TODO: getFn generating the JIT'ed function is bad as now recursive functions will not get rewritten
 	if (!resolveAll()) {
 		return false;
 	}
@@ -334,7 +334,8 @@ bool Parser::innerParse(char const*& input) {
 			} else if (checkResult.resultType.getTypeID() == TypeIdentifier::Boolean) {
 				printf("Line Result: %s\n", result != 0 ? "true" : "false");
 			} else {
-				printf("TODO: I don't know how to print this output");
+				printf("ERROR: I don't know how to print this output");
+				exit(1);
 			}
 		}
 

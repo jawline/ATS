@@ -51,6 +51,14 @@ char* readFromFile(char const* filename) {
 	return buffer;
 }
 
+bool isArgument(char const* name, int argc, char** argv) {
+
+}
+
+char* getArgument(char const* name, int argc, char** argv) {
+
+}
+
 int main(int argc, char** argv) {
 
 	if (argc != 2) {
@@ -66,6 +74,7 @@ int main(int argc, char** argv) {
 	}
 
 	Assembler::Parser parser;
+
 	if (!parser.parse(inputSource)) {
 		return -1;
 	}

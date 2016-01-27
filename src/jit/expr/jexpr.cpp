@@ -1,5 +1,6 @@
 #include "jexpr.h"
 #include "../jhelper.h"
+#include <stdlib.h>
 
 using namespace JIT;
 using namespace Expressions;
@@ -42,7 +43,8 @@ std::string Expression::getMarker() const {
 }
 
 void Expression::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<SafeCompiledExpression, size_t>>& unresolvedList, std::vector<SafeCompiledExpression> const& currentCalls) {
-  printf("JIT shouldnt be called on base type\n");
+  printf("ERROR: JIT shouldnt be called on base type\n");
+  exit(150);
 }
 
 ExpressionCheckResult Expression::checkResultType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) {
