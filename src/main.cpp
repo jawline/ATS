@@ -61,17 +61,24 @@ bool isFlag(char const* name, int argc, char** argv) {
 }
 
 char* getArgument(char const* name, int argc, char** argv) {
+	
+	for (int i = 0; i < argc; i++) {
+		if (strcmp(argv[i], name) == 0) {
+			return i < (argc - 1) ? argv[i+1] : nullptr;
+		}
+	}
 
+	return nullptr;
 }
 
 int main(int argc, char** argv) {
 
-	if (argc != 2) {
+	if (argc < 2) {
 		printf("Incorrect number of arguments\n");
 		return -1;
 	}
 
-	char* inputSource = readFromFile(argv[1]);
+	char* inputSource = readFromFile(argv[argc - 1]);
 
 	if (!inputSource) {
 		printf("Could not load input source\n");
@@ -85,6 +92,10 @@ int main(int argc, char** argv) {
 	}
 
 	delete[] inputSource;
+
+	if (isFlag("-i", argc, argv) || isFlag("--interactive", argc, argv)) {
+		printf("Would enter interactive mode here\n");
+	}
 
 	return 0;
 }
