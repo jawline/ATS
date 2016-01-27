@@ -33,8 +33,11 @@ void FCall::write(Assembler::ByteBuffer& buffer, std::vector<std::pair<SafeCompi
         auto newCalls = currentCalls;
         newCalls.push_back(_callbackEntry);
         callbackLocation = (void*) _callbackEntry->getCompiled(newCalls);
-      } else {
-        size_t addressStart = Helper::callFunction(callbackLocation, buffer);
+      }
+
+      size_t addressStart = Helper::callFunction(callbackLocation, buffer);
+
+      if (recursion || !_callbackEntry.get()) {
         unresolvedList.push_back(std::pair<SafeCompiledExpression, size_t>(_callbackEntry, addressStart));
       }
 }
