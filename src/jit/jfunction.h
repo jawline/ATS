@@ -16,7 +16,7 @@ namespace JIT {
 		Function(std::string const& name, Expressions::SafeExpression const& stmt, size_t numArgs);
 		~Function();
 
-		int64_t run(char const*& errorMessage);
+		int64_t run();
 		JFPTR getFnPtr();
 
 		Expressions::SafeCompiledExpression getCompiledExpression() const;

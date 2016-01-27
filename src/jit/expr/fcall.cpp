@@ -68,6 +68,10 @@ bool FCall::isRecursion(std::vector<Type> const& storedTypes, std::vector<Type> 
 
 BaseCheckResult FCall::getBaseType(std::vector<Type> const& storedTypes, std::vector<MethodCall>& potentiallyCalledFunctions) {
 
+      if (getCallbackExpression() == nullptr) {
+        return BaseCheckResult{false, Unknown};
+      }
+
       std::vector<Type> argTypes;
 
       for (unsigned int i = 0; i < _args.size(); i++) {

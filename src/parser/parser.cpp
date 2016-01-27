@@ -326,14 +326,10 @@ bool Parser::innerParse(char const*& input) {
 				printf("Cannot run fn because of type error\n");
 			}
 		} else {
-			
-			char const* errorMessage;
 
-			auto result = fn->run(errorMessage);
+			auto result = fn->run();
 
-			if (errorMessage) {
-				printf("ERROR: %s\n", errorMessage);
-			} else if (checkResult.resultType.getTypeID() == TypeIdentifier::Integer) {
+			if (checkResult.resultType.getTypeID() == TypeIdentifier::Integer) {
 				printf("Line Result: %" PRId64 "\n", result);
 			} else if (checkResult.resultType.getTypeID() == TypeIdentifier::Boolean) {
 				printf("Line Result: %s\n", result != 0 ? "true" : "false");
