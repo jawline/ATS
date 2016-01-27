@@ -51,7 +51,7 @@ char* readFromFile(char const* filename) {
 	return buffer;
 }
 
-bool isArgument(char const* name, int argc, char** argv) {
+bool isFlag(char const* name, int argc, char** argv) {
 	for (int i = 0; i < argc; i++) {
 		if (strcmp(argv[i], name) == 0) {
 			return true;
