@@ -20,9 +20,11 @@ SafeExpression Function::expression() const {
   return _stmt->getExpression();
 }
 
-void Function::rewriteCallbacks() {
+unsigned int Function::rewriteCallbacks() {
   
-  _stmt->rewriteCallbacks();
+  unsigned int unresolved;
+
+  unresolved += _stmt->rewriteCallbacks();
 
   //Rewrite functions this function calls
   std::vector<Type> storedTypes;
@@ -30,8 +32,10 @@ void Function::rewriteCallbacks() {
   checkResultType(storedTypes, callList);
 
   for (unsigned int i = 0; i < callList.size(); i++) {
-    callList[i].cexpr->rewriteCallbacks();
+    unresolved += callList[i].cexpr->rewriteCallbacks();
   }
+
+  return unresolved;
 }
 
 Expressions::SafeCompiledExpression Function::getCompiledExpression() const {
@@ -63,10 +67,16 @@ void Function::simplify(SafeAnalysis analysis) {
   _stmt->setExpression(analysis->doAnalysis(_stmt->getExpression()));
 }
 
-int64_t Function::run() {
+int64_t Function::run(char const*& errorMessage) {
+  errorMessage = nullptr;
+
   auto fnPointer = getFnPtr();
-  rewriteCallbacks();
-  return fnPointer();
+  
+  if (rewriteCallbacks()) {
+    errorMessage = "unresolved functions means this method cannot be run";
+  } else {
+    return fnPointer();
+  }
 }
 
 JFPTR Function::getFnPtr() {

@@ -327,9 +327,13 @@ bool Parser::innerParse(char const*& input) {
 			}
 		} else {
 			
-			auto result = fn->run();
+			char const* errorMessage;
 
-			if (checkResult.resultType.getTypeID() == TypeIdentifier::Integer) {
+			auto result = fn->run(errorMessage);
+
+			if (errorMessage) {
+				printf("ERROR: %s\n", errorMessage);
+			} else if (checkResult.resultType.getTypeID() == TypeIdentifier::Integer) {
 				printf("Line Result: %" PRId64 "\n", result);
 			} else if (checkResult.resultType.getTypeID() == TypeIdentifier::Boolean) {
 				printf("Line Result: %s\n", result != 0 ? "true" : "false");

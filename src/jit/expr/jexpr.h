@@ -111,8 +111,11 @@ namespace JIT {
 
           JFPTR getCompiled(std::vector<SafeCompiledExpression> const& currentCalls);
 
-          //This method links one call into another then mutual recursion means that memory locations are not both known on write
-          void rewriteCallbacks();
+          /**
+           * This method links one call into another then mutual recursion means 
+           * that memory locations are not both known on write
+           */
+          unsigned int rewriteCallbacks();
     };
   }
 }

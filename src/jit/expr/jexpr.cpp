@@ -101,26 +101,28 @@ SafeExpression CompiledExpression::getExpression() const {
   return _expr;
 }
 
-void CompiledExpression::rewriteCallbacks() {
+unsigned int CompiledExpression::rewriteCallbacks() {
 
-  if (!_cachedCallback) {
-    return;
-  }
+  if (_cachedCallback) {
 
-  for (unsigned int i = 0; i < _unresolvedCallList.size(); i++) {
-    
-    auto basicList = std::vector<SafeCompiledExpression>();
-    basicList.push_back(_unresolvedCallList[i].first);
+    for (unsigned int i = 0; i < _unresolvedCallList.size(); i++) {
+      
+      auto basicList = std::vector<SafeCompiledExpression>();
+      basicList.push_back(_unresolvedCallList[i].first);
 
-    auto foundCallback = _unresolvedCallList[i].first->getCompiled(basicList);
+      auto foundCallback = _unresolvedCallList[i].first->getCompiled(basicList);
 
-    if (foundCallback) {
-      Helper::updateAddress(_cachedCallback, _unresolvedCallList[i].second, (void*) foundCallback);
-      _unresolvedCallList.erase(_unresolvedCallList.begin() + i);
-      //Drop back by 1 as the next item will now hold this items index
-      i--;
+      if (foundCallback) {
+        Helper::updateAddress(_cachedCallback, _unresolvedCallList[i].second, (void*) foundCallback);
+        _unresolvedCallList.erase(_unresolvedCallList.begin() + i);
+        //Drop back by 1 as the next item will now hold this items index
+        i--;
+      }
     }
+
   }
+
+  return _unresolvedCallList.size();
 }
 
 JFPTR CompiledExpression::getCompiled(std::vector<SafeCompiledExpression> const& currentCalls) {

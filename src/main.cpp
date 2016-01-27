@@ -107,6 +107,8 @@ char const* findTarget(int argc, char** argv) {
 
 int main(int argc, char** argv) {
 
+	printf("ATS - Annotated Type System\n");
+
 	if (isFlag("-h", argc, argv) || isFlag("--help", argc, argv)) {
 		printf("Run with no arguments to enter interactive mode\n");
 		printf("Run %s ./scriptpath to execute a script\n", argv[0]);
