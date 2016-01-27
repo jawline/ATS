@@ -71,6 +71,10 @@ char* getArgument(char const* name, int argc, char** argv) {
 	return nullptr;
 }
 
+int doInteractive(Assembler::Parser& parser) {
+	printf("Would enter interactive mode here\n");
+}
+
 int main(int argc, char** argv) {
 
 	if (argc < 2) {
@@ -94,8 +98,8 @@ int main(int argc, char** argv) {
 	delete[] inputSource;
 
 	if (isFlag("-i", argc, argv) || isFlag("--interactive", argc, argv)) {
-		printf("Would enter interactive mode here\n");
+		return doInteractive(parser);
+	} else {
+		return 0;
 	}
-
-	return 0;
 }
