@@ -73,7 +73,6 @@ char* getArgument(char const* name, int argc, char** argv) {
 }
 
 int doInteractive(Assembler::Parser& parser) {
-	printf("Would enter interactive mode here\n");
 	char buffer[4096];
 
 	while(true) {
