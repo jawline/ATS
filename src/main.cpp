@@ -97,17 +97,34 @@ int doFile(char const* targetFile, Assembler::Parser& parser) {
 	}
 
 	delete[] inputSource;
+
+	return 0;
+}
+
+char const* findTarget(int argc, char** argv) {
+	return argc > 1 ? argv[argc - 1] : nullptr;
 }
 
 int main(int argc, char** argv) {
 
+	if (isFlag("-h", argc, argv) || isFlag("--help", argc, argv)) {
+		printf("Run with no arguments to enter interactive mode\n");
+		printf("Run %s ./scriptpath to execute a script\n", argv[0]);
+		printf("Run %s -i ./scriptpath to execute a script interactively", argv[0]);
+		return 0;
+	}
+
 	bool interactive = isFlag("-i", argc, argv) || isFlag("--interactive", argc, argv);
-	char* targetFile = argc > 1 ? argv[argc - 1] : nullptr;
+	char const* targetFile = findTarget(argc, argv);
 
 	Assembler::Parser parser;
 
 	if (targetFile) {
-		doFile(targetFile, parser);
+		if (doFile(targetFile, parser) != 0) {
+			return -1;
+		}
+	} else {
+		interactive = true;
 	}
 
 	if (interactive) {
