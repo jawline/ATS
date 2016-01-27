@@ -73,37 +73,44 @@ char* getArgument(char const* name, int argc, char** argv) {
 }
 
 int doInteractive(Assembler::Parser& parser) {
+
+	printf("Entering interactive mode\n");
 	char buffer[4096];
 
 	while(true) {
+		printf("Query: ");
 		std::cin.getline(buffer, 4096);
 		parser.parse(buffer);
 	}
 }
 
-int main(int argc, char** argv) {
-
-	if (argc < 2) {
-		printf("Incorrect number of arguments\n");
-		return -1;
-	}
-
-	char* inputSource = readFromFile(argv[argc - 1]);
+int doFile(char const* targetFile, Assembler::Parser& parser) {
+	char* inputSource = readFromFile(targetFile);
 
 	if (!inputSource) {
 		printf("Could not load input source\n");
 		return -1;
 	}
 
-	Assembler::Parser parser;
-
 	if (!parser.parse(inputSource)) {
 		return -1;
 	}
 
 	delete[] inputSource;
+}
 
-	if (isFlag("-i", argc, argv) || isFlag("--interactive", argc, argv)) {
+int main(int argc, char** argv) {
+
+	bool interactive = isFlag("-i", argc, argv) || isFlag("--interactive", argc, argv);
+	char* targetFile = argc > 1 ? argv[argc - 1] : nullptr;
+
+	Assembler::Parser parser;
+
+	if (targetFile) {
+		doFile(targetFile, parser);
+	}
+
+	if (interactive) {
 		return doInteractive(parser);
 	} else {
 		return 0;
