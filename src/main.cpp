@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <iostream>
 #include "jit/jfunction.h"
 #include "utils/bytebuffer.h"
 #include "parser/parser.h"
@@ -73,6 +74,12 @@ char* getArgument(char const* name, int argc, char** argv) {
 
 int doInteractive(Assembler::Parser& parser) {
 	printf("Would enter interactive mode here\n");
+	char buffer[4096];
+
+	while(true) {
+		std::cin.getline(buffer, 4096);
+		parser.parse(buffer)
+	}
 }
 
 int main(int argc, char** argv) {
