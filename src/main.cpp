@@ -78,7 +78,7 @@ int doInteractive(Assembler::Parser& parser) {
 
 	while(true) {
 		std::cin.getline(buffer, 4096);
-		parser.parse(buffer)
+		parser.parse(buffer);
 	}
 }
 
