@@ -1,5 +1,5 @@
-fn even(n) -> (if n (odd (- n 1)) true)
-fn odd(n) -> (if n (even (- n 1)) false)
+fn even(n) -> (if n (odd (- n 1)) true) #Test one
+fn odd(n) -> (if n (even (- n 1)) false) # Test Two Comments
 
 fn fact(n) -> (if n (* n (fact (- n 1))) 1)
 
