@@ -73,7 +73,17 @@ char const* Tokeniser::skipWhite(char const* input) {
   		_numProcessedLines++;
   	}
   }
+
+  if (*input == '#') {
+  	input = skipComment(input + 1);
+  }
+
   return input;
+}
+
+char const* Tokeniser::skipComment(char const* input) {
+  for (; *input && *input != '\n'; input++) {}
+  return skipWhite(input);
 }
 
 Token Tokeniser::nextToken(char const*& input) {

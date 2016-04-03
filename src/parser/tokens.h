@@ -49,6 +49,7 @@ namespace Assembler {
 		unsigned int _numProcessedLines;
 
 		char const* skipWhite(char const* input);
+		char const* skipComment(char const* input);
 	public:
 		Tokeniser();
 		~Tokeniser();
