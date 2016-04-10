@@ -86,6 +86,10 @@ SafeExpression Parser::parseFunctionCall(char const*& input, std::vector<std::st
 		next = _tokeniser.peekToken(input);
 		
 		if (next.id() == LPAREN) {
+
+  			//Discard lparen
+			next = _tokeniser.nextToken(input);
+
 			SafeExpression arg = parseBlock(input, argList);
 			CHECK(arg);
 
