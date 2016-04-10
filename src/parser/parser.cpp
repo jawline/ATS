@@ -88,6 +88,14 @@ SafeExpression Parser::parseFunctionCall(char const*& input, std::vector<std::st
 		if (next.id() == LPAREN) {
 			SafeExpression arg = parseBlock(input, argList);
 			CHECK(arg);
+
+			next = _tokeniser.nextToken(input);
+
+			if (next.id() != RPAREN) {
+				printf("Expected RPAREN near %s\n", next.debugInfo().c_str());
+				return nullptr;
+			}
+
 			args.push_back(arg);
 		} else if (next.id() == NUM || next.id() == BOOL) {
 			SafeExpression arg = parseAtom(input);
@@ -187,8 +195,7 @@ SafeExpression Parser::parseArg(char const*& input, std::vector<std::string> con
 SafeExpression Parser::parseBlock(char const*& input, std::vector<std::string> const& argList) {
 
 	//Discard lparen
-	Token next = _tokeniser.nextToken(input);
-	next = _tokeniser.peekToken(input);
+	Token next = _tokeniser.peekToken(input);
 	SafeExpression result;
 
 	if (next.id() == ID) {
@@ -210,13 +217,6 @@ SafeExpression Parser::parseBlock(char const*& input, std::vector<std::string> c
 	}
 
 	CHECK(result);
-
-	next = _tokeniser.nextToken(input);
-
-	if (next.id() != RPAREN) {
-		printf("Expected RPAREN near %s\n", next.debugInfo().c_str());
-		return nullptr;
-	}
 
 	return result;
 }
@@ -312,7 +312,36 @@ bool Parser::innerParse(char const*& input) {
 
 	auto pcf = std::vector<MethodCall>();
 
-	if (next.id() == LPAREN) {
+	if (next.id() == QUERY) {
+		auto typeOfQuery = _tokeniser.nextToken(input);
+		auto fn = parseAnonFunction(input);
+		CHECKT(fn, false);
+
+		std::vector<Type> argTypes;
+		auto checkResult = fn->checkResultType(argTypes, pcf);
+
+		std::string name = typeOfQuery.asString();
+
+		if (name.compare(":t") == 0) {
+			printf("Type: %s\n", checkResult.resultType.toString().c_str());
+		} else if (name.compare(":pc") == 0) {
+			printf("Potentially Called: ");
+			for (unsigned int i = 0; i < pcf.size(); i++) {
+				if (i) {
+					printf(", ");
+				}
+				printf("%s", pcf[i].cexpr->getExpression()->getMarker().c_str());
+			}
+			printf("\n");
+		}
+
+	} else if (next.id() == FUNCTION) {
+
+		if (!parseFunction(input, _functions)) {
+			return false;
+		}
+
+	} else {
 		auto fn = parseAnonFunction(input);
 		CHECKT(fn, false);
 
@@ -338,46 +367,6 @@ bool Parser::innerParse(char const*& input) {
 				exit(1);
 			}
 		}
-
-	} else if (next.id() == QUERY) {
-		auto typeOfQuery = _tokeniser.nextToken(input);
-		next = _tokeniser.peekToken(input);
-
-		if (next.id() == LPAREN) {
-			auto fn = parseAnonFunction(input);
-			CHECKT(fn, false);
-
-			std::vector<Type> argTypes;
-			auto checkResult = fn->checkResultType(argTypes, pcf);
-
-			std::string name = typeOfQuery.asString();
-
-			if (name.compare(":t") == 0) {
-				printf("Type: %s\n", checkResult.resultType.toString().c_str());
-			} else if (name.compare(":pc") == 0) {
-				printf("Potentially Called: ");
-				for (unsigned int i = 0; i < pcf.size(); i++) {
-					if (i) {
-						printf(", ");
-					}
-					printf("%s", pcf[i].cexpr->getExpression()->getMarker().c_str());
-				}
-				printf("\n");
-			}
-		} else {
-			printf("Error, expected LPAREN after :t\n");
-			return false;
-		}
-
-	} else if (next.id() == FUNCTION) {
-
-		if (!parseFunction(input, _functions)) {
-			return false;
-		}
-
-	} else {
-		printf("Expected LPAREN near %s\n", next.debugInfo().c_str());
-		return false;
 	}
 
 	return innerParse(input);
